@@ -1,0 +1,4 @@
+bin/*
+/bin
+/build-release
+/bin-release
