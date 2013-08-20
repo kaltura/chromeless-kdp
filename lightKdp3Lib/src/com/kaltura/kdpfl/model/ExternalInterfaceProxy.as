@@ -2,6 +2,7 @@ package com.kaltura.kdpfl.model
 {
 	import com.kaltura.kdpfl.model.vo.ExternalInterfaceVO;
 	import com.kaltura.kdpfl.util.KTextParser;
+	import com.kaltura.kdpfl.view.media.KMediaPlayerMediator;
 	
 	import flash.events.TimerEvent;
 	import flash.external.ExternalInterface;
@@ -22,6 +23,7 @@ package com.kaltura.kdpfl.model
 		public static const SEND_NOTIFICATION : String = "sendNotification";
 		public static const EVALUATE : String = "evaluate";
 		public static const SET_ATTRIUBUTE : String = "setKDPAttribute";
+		public static const GET_CURRENT_TIME: String = "getCurrentTime";
 		//public static const JS_CALLBACK_READY : String = "jsCallbackReady";
 		public var jsCallBackReadyFunc : String = "jsCallbackReady";
 		
@@ -137,6 +139,8 @@ package com.kaltura.kdpfl.model
 			addCallback( SET_ATTRIUBUTE , setAttribute );
 			addCallback( ADD_JS_LISTENER , addJsListener );
 			addCallback( REMOVE_JS_LISTENER , removeJsListener );
+			addCallback( GET_CURRENT_TIME , getCurrentTime );
+			
 			call( jsCallBackReadyFunc );
 		}
 		
@@ -175,6 +179,10 @@ package com.kaltura.kdpfl.model
 			var i:int = funcs.indexOf(jsFunctionName);
 			if (i != -1)
 				funcs.splice(i, 1);			
+		}
+		
+		public function getCurrentTime():Number {
+			return (facade.retrieveMediator(KMediaPlayerMediator.NAME) as KMediaPlayerMediator).getCurrentTime();
 		}
 
 		/**
