@@ -508,10 +508,12 @@ package com.kaltura.kdpfl.view.media
 						
 					}
 					else {
+						//currently intelli seek doesn't work. ignore seek.
+						sendNotification(NotificationType.PLAYER_SEEK_END);
 						//do intlliseek 
 						
 						//cannot intelliseek in this case
-						if(!_mediaProxy.vo.keyframeValuesArray && !isMP4Stream()) return;
+					/*	if(!_mediaProxy.vo.keyframeValuesArray && !isMP4Stream()) return;
 						
 						
 						//on a new seek we can reset the load media on play flag
@@ -525,7 +527,7 @@ package com.kaltura.kdpfl.view.media
 						{
 							_pausedPending = false;
 						}
-						doIntelliSeek(seekTo);
+						doIntelliSeek(seekTo);*/
 					}
 
 					
