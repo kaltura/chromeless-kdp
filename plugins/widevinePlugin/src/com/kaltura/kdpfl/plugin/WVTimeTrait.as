@@ -38,8 +38,10 @@ package com.kaltura.kdpfl.plugin
 
 		private function onNetStatus(e : Object) : void
 		{
+			/*
 			if (e.info.code == NetStreamCodes.NETSTREAM_PLAY_COMPLETE)
 				signalComplete();
+			*/
 		}
 		private var _wvNetStream : WvNetStream;
 	}
