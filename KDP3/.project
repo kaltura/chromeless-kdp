@@ -15,11 +15,4 @@
 	<natures>
 		<nature>com.adobe.flexbuilder.project.actionscriptnature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>bin-debug</name>
-			<type>2</type>
-			<location>/Applications/XAMPP/xamppfiles/htdocs/lightPlayer</location>
-		</link>
-	</linkedResources>
 </projectDescription>

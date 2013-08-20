@@ -18,7 +18,7 @@
           <libraryPathEntry kind="3" linkType="1" path="${PROJECT_FRAMEWORKS}/libs/automation_agent.swc" useDefaultLinkType="false"/>
         </excludedEntries>
       </libraryPathEntry>
-      <libraryPathEntry kind="1" linkType="1" path="${DOCUMENTS}/kdp3Lib/libs"/>
+      <libraryPathEntry kind="1" linkType="1" path="${DOCUMENTS}/lightKdp3Lib/libs"/>
       <libraryPathEntry kind="3" linkType="1" path="/VASTNew/bin/VASTNew.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="1" path="/lightKdp3Lib/bin/lightKdp3Lib.swc" useDefaultLinkType="false"/>
     </libraryPath>
