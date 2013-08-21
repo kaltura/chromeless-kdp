@@ -242,6 +242,7 @@ package
 		{
 			var errEvent:MediaErrorEvent = new MediaErrorEvent(MediaErrorEvent.MEDIA_ERROR);
 			_mediaProxy.vo.media.dispatchEvent(errEvent);
+			sendNotification(NotificationType.ENABLE_GUI, {guiEnabled : false , enableType : EnableType.CONTROLS});
 		}
 		
 		/**
