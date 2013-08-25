@@ -23,6 +23,7 @@ package com.kaltura.kdpfl.controller.media
 	import org.osmf.net.NetClient;
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.command.SimpleCommand;
+	import com.kaltura.kdpfl.model.type.StreamerType;
 	
 	/**
 	 * LiveStreamCommand is responsible for connecting a live stream. 
@@ -73,22 +74,29 @@ package com.kaltura.kdpfl.controller.media
 		 */		
 		override public function execute(notification:INotification):void
 		{
-			_resource  = notification.getBody() as URLResource;	
-			_url = _resource.url;
-			_resourceURL = new FMSURL(_url);
-			var loader : URLLoader = new URLLoader();
-			if (_url.indexOf("rtmp") == 0)
-			{
-				_baseUrl = _resourceURL.protocol + "://" + _resourceURL.host + "/" + (_resourceURL.hasOwnProperty("appName") ? _resourceURL["appName"] : "");
-				_entryUrl = (_resourceURL as FMSURL).streamName;
-				createConnection();
-				
+			if (_mediaProxy.vo.deliveryType == StreamerType.RTMP) {
+				_resource  = notification.getBody() as URLResource;	
+				_url = _resource.url;
+				_resourceURL = new FMSURL(_url);
+				var loader : URLLoader = new URLLoader();
+				if (_url.indexOf("rtmp") == 0)
+				{
+					_baseUrl = _resourceURL.protocol + "://" + _resourceURL.host + "/" + (_resourceURL.hasOwnProperty("appName") ? _resourceURL["appName"] : "");
+					_entryUrl = (_resourceURL as FMSURL).streamName;
+					createConnection();
+					
+				}
+				else
+				{
+					loader.addEventListener(Event.COMPLETE, completeHandler);
+					loader.load(new URLRequest(_url));
+				}
 			}
-			else
-			{
-				loader.addEventListener(Event.COMPLETE, completeHandler);
-				loader.load(new URLRequest(_url));
+			//for other streamerTypes we perform the "isLive" check from outside of the Flash player
+			else {
+				sendNotification(LIVE_STREAM_READY);
 			}
+		
 		}
 
 		

@@ -317,6 +317,7 @@ package com.kaltura.kdpfl.view.media
 					_hasPlayed = false;
 					ignorePlaybackComplete = false;
 					_mediaErrorSent = false;
+					dvrWinSize = 0;
 					//Fixed weird issue, where the CHANGE_MEDIA would be caught by the mediator 
 					// AFTER the new media has already loaded. Caused media never to be loaded.
 					if (designatedEntryId != _mediaProxy.vo.entryUrl || _mediaProxy.vo.isFlavorSwitching )
@@ -1172,15 +1173,14 @@ package com.kaltura.kdpfl.view.media
 			else if(event.time)
 			{
 				//in live dvr: minimum duration should be dvrwindow size
-				/*if (!_sequenceProxy.vo.isInSequence && (_mediaProxy.vo.entry is KalturaLiveStreamEntry &&
-					(_mediaProxy.vo.entry as KalturaLiveStreamEntry).dvrStatus == KalturaDVRStatus.ENABLED))
+				if (_mediaProxy.vo.isLive)
 				{
 					_duration = Math.max(dvrWinSize, event.time);
 				}
 				else
-				{*/
+				{
 					_duration=event.time;
-				//}
+				}
 				sendNotification( NotificationType.DURATION_CHANGE , {newValue:_duration});
 				//save entryDuration in case we will go into intelliseek and need to use it.
 				if (!_sequenceProxy.vo.isInSequence)
