@@ -1,19 +1,14 @@
 package
 {
-	import com.kaltura.KalturaClient;
 	import com.kaltura.kdpfl.model.ConfigProxy;
 	import com.kaltura.kdpfl.model.MediaProxy;
 	import com.kaltura.kdpfl.model.SequenceProxy;
 	import com.kaltura.kdpfl.model.type.EnableType;
 	import com.kaltura.kdpfl.model.type.NotificationType;
 	import com.kaltura.kdpfl.model.type.SequenceContextType;
-	import com.kaltura.kdpfl.model.type.StreamerType;
 	import com.kaltura.kdpfl.plugin.WVLoadTrait;
 	import com.kaltura.kdpfl.plugin.WVPluginInfo;
 	import com.kaltura.kdpfl.view.media.KMediaPlayerMediator;
-	import com.kaltura.vo.KalturaFlavorAsset;
-	import com.kaltura.vo.KalturaMediaEntry;
-	import com.kaltura.vo.KalturaWidevineFlavorAsset;
 	import com.widevine.WvNetConnection;
 	
 	import flash.events.Event;
