@@ -8,10 +8,8 @@ package com.kaltura.kdpfl.model.vo
 	import org.osmf.media.MediaFactory;MediaFactory;
 	import org.osmf.media.MediaResourceBase;
 	import org.osmf.media.DefaultMediaFactory;
+	import com.kaltura.kdpfl.model.type.SourceType;
 
-	
-	
-	
 	/**
 	 * Class MediaVO holds parameters related to the media that the KDP plays. 
 	 * 
@@ -182,6 +180,11 @@ package com.kaltura.kdpfl.model.vo
 		 * Delivery type of the entry - because there is a possibility of a playlist that contains both progressive download entries and live stream entries.
 		 */	
 		public var deliveryType : String = StreamerType.HTTP;
+		
+		/**
+		 * entry source type
+		 * */
+		public var sourceType : String = SourceType.F4M;
 		
 		[Bindable]
 		/**

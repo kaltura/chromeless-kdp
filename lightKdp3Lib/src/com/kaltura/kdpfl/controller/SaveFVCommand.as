@@ -35,6 +35,9 @@ package com.kaltura.kdpfl.controller
 			if (flashvars.hasOwnProperty("streamerType"))
 				mediaProxy.vo.deliveryType = flashvars.streamerType;
 			
+			if (flashvars.hasOwnProperty("sourceType"))
+				mediaProxy.vo.sourceType = flashvars.sourceType;
+			
 			if ((flashvars.hasOwnProperty("twoPhaseManifest") && flashvars.twoPhaseManifest == "true") 
 				|| flashvars.streamerType == StreamerType.HDNETWORK_HDS 
 				|| flashvars.streamerType == StreamerType.HDS )

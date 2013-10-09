@@ -34,6 +34,7 @@ package com.kaltura.kdpfl.model
 	import org.osmf.net.StreamType;
 	import org.osmf.net.StreamingURLResource;
 	import org.puremvc.as3.patterns.proxy.Proxy;
+	import com.kaltura.kdpfl.model.type.SourceType;
 	
 	/**
 	 * This class is the proxy for the media playing in the media player.
@@ -118,6 +119,7 @@ package com.kaltura.kdpfl.model
 					break;
 			}
 		}
+
 		
 		/**
 		 * creates the proper media element according to the given resourceUrl 
@@ -126,8 +128,8 @@ package com.kaltura.kdpfl.model
 		 */		
 		private function createElement(resourceUrl:String, streamType:String = null):void {
 			var resource:MediaResourceBase;
-			
-			if (vo.deliveryType == StreamerType.HDNETWORK || vo.deliveryType == StreamerType.HDNETWORK_HDS || vo.isHds)
+			//url resource
+			if (vo.sourceType == SourceType.URL || vo.deliveryType == StreamerType.HDNETWORK || vo.deliveryType == StreamerType.HDNETWORK_HDS || vo.isHds)
 			{
 				resource = new StreamingURLResource(resourceUrl, StreamType.LIVE_OR_RECORDED);
 				addMetadataToResource(resource);
@@ -135,7 +137,7 @@ package com.kaltura.kdpfl.model
 				var adaptedHDElement : DualThresholdBufferingProxyElement = new DualThresholdBufferingProxyElement( vo.initialBufferTime, vo.expandedBufferTime, element);
 				vo.media = adaptedHDElement;			
 			}			
-			else
+			else //f4m resource
 			{	
 				resource = new StreamingURLResource(resourceUrl, streamType);
 				addMetadataToResource(resource);
