@@ -52,6 +52,7 @@ package
 		protected function onOSMFPluginLoaded (e : MediaFactoryEvent) : void
 		{
 			dispatchEvent( new KPluginEvent (KPluginEvent.KPLUGIN_INIT_COMPLETE) );
+			removeListeners();
 		}
 		/**
 		 * Listener for the LOAD_ERROR event.
@@ -61,6 +62,7 @@ package
 		protected function onOSMFPluginLoadError (e : MediaFactoryEvent) : void
 		{
 			dispatchEvent( new KPluginEvent (KPluginEvent.KPLUGIN_INIT_FAILED) );
+			removeListeners();
 		}
 		
 		public function setSkin(styleName:String, setSkinSize:Boolean=false):void
@@ -82,6 +84,12 @@ package
 		public function set pluginURL(value:String):void
 		{
 			_pluginURL = value;
+		}
+		
+		
+		private function removeListeners():void {
+			_localMediaFactory.removeEventListener(MediaFactoryEvent.PLUGIN_LOAD, onOSMFPluginLoaded);
+			_localMediaFactory.removeEventListener(MediaFactoryEvent.PLUGIN_LOAD_ERROR, onOSMFPluginLoadError);
 		}
 	}
 }
