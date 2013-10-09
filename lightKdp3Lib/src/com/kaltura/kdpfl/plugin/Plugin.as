@@ -23,6 +23,8 @@ package com.kaltura.kdpfl.plugin
 		
 		private var _content: IPlugin;
 		
+		public var asyncInit:Boolean;
+		
 		/**
 		 * This xml is saved in order to bind the current xml attributes of this plugin
 		 * when the plug in has finish loaded

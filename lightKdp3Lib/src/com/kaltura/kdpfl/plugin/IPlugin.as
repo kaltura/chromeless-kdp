@@ -1,12 +1,15 @@
 package com.kaltura.kdpfl.plugin
 {
+	import flash.events.IEventDispatcher;
+	
 	import org.puremvc.as3.interfaces.IFacade;
+
 	/**
 	 * Interface for the KDP plugins. 
 	 * @author Hila
 	 * 
 	 */	
-	public interface IPlugin
+	public interface IPlugin extends IEventDispatcher
 	{
 		/**
 		 * This function is automatically called by the player after the plugin has loaded.

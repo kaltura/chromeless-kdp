@@ -105,6 +105,7 @@ package com.kaltura.kdpfl.plugin
 			
 			
 			var plugin:Plugin = new Plugin(_url2PluginMap[url], pluginName);
+			plugin.asyncInit = asyncInit;
 			
 			if (asyncInit)
 			{

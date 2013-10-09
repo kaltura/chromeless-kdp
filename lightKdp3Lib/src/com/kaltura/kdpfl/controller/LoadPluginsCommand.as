@@ -7,6 +7,7 @@ package com.kaltura.kdpfl.controller
 	import com.kaltura.kdpfl.model.type.NotificationType;
 	import com.kaltura.kdpfl.model.type.PluginStatus;
 	import com.kaltura.kdpfl.model.type.StreamerType;
+	import com.kaltura.kdpfl.plugin.KPluginEvent;
 	import com.kaltura.kdpfl.plugin.Plugin;
 	import com.kaltura.kdpfl.plugin.PluginManager;
 	import com.kaltura.kdpfl.util.KTextParser;
@@ -96,6 +97,11 @@ package com.kaltura.kdpfl.controller
 				commandComplete();
 		}
 		
+		private function onAsyncResponse (event:KPluginEvent) : void {
+			_pluginsCounter--;
+			checkAllPluginsLoaded();
+		}
+		
 		
 		/**
 		 * Handler for the PLUGIN_READY event fired by the PluginManager class, after the plugin was loaded and its properties successfully set.
@@ -131,7 +137,12 @@ package com.kaltura.kdpfl.controller
 				}
 			}
 			
-			facade['bindObject'][plugin.pluginName] = plugin;	
+			facade['bindObject'][plugin.pluginName] = plugin;
+			if (plugin.asyncInit) { //increase loading qeue - wait until async init is complete
+				plugin.content.addEventListener(KPluginEvent.KPLUGIN_INIT_COMPLETE, onAsyncResponse);
+				plugin.content.addEventListener(KPluginEvent.KPLUGIN_INIT_FAILED, onAsyncResponse );
+				_pluginsCounter ++;
+			}
 			plugin.content.initializePlugin( facade );	
 			
 			sendNotification(NotificationType.SINGLE_PLUGIN_LOADED, plugin.name);
