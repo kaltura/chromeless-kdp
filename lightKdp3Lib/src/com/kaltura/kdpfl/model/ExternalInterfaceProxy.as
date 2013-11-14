@@ -141,7 +141,11 @@ package com.kaltura.kdpfl.model
 			addCallback( REMOVE_JS_LISTENER , removeJsListener );
 			addCallback( GET_CURRENT_TIME , getCurrentTime );
 			
-			call( jsCallBackReadyFunc );
+			var readyCallback:String = jsCallBackReadyFunc;
+			if ( _flashvars.hasOwnProperty("jsCallBackReadyFunc") )
+				readyCallback = _flashvars.jsCallBackReadyFunc;
+			
+			call( readyCallback );
 		}
 		
 		/**
