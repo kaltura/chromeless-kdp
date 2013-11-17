@@ -3,6 +3,7 @@ package com.kaltura.kdpfl.model
 	import com.kaltura.kdpfl.model.strings.MessageStrings;
 	import com.kaltura.kdpfl.model.type.EnableType;
 	import com.kaltura.kdpfl.model.type.NotificationType;
+	import com.kaltura.kdpfl.model.type.SourceType;
 	import com.kaltura.kdpfl.model.type.StreamerType;
 	import com.kaltura.kdpfl.model.vo.MediaVO;
 	import com.kaltura.kdpfl.model.vo.SequenceVO;
@@ -34,7 +35,6 @@ package com.kaltura.kdpfl.model
 	import org.osmf.net.StreamType;
 	import org.osmf.net.StreamingURLResource;
 	import org.puremvc.as3.patterns.proxy.Proxy;
-	import com.kaltura.kdpfl.model.type.SourceType;
 	
 	/**
 	 * This class is the proxy for the media playing in the media player.
@@ -128,8 +128,12 @@ package com.kaltura.kdpfl.model
 		 */		
 		private function createElement(resourceUrl:String, streamType:String = null):void {
 			var resource:MediaResourceBase;
+			var endIndex:int = resourceUrl.indexOf("?");
+			if ( endIndex == -1 )
+				endIndex = resourceUrl.length;
+			var postfix:String = resourceUrl.substring(endIndex-4, endIndex);
 			//url resource
-			if (vo.sourceType == SourceType.URL || vo.deliveryType == StreamerType.HDNETWORK || vo.deliveryType == StreamerType.HDNETWORK_HDS || vo.isHds)
+			if (vo.sourceType == SourceType.URL || postfix!=".f4m" || vo.deliveryType == StreamerType.HDNETWORK || vo.deliveryType == StreamerType.HDNETWORK_HDS || vo.isHds)
 			{
 				resource = new StreamingURLResource(resourceUrl, StreamType.LIVE_OR_RECORDED);
 				addMetadataToResource(resource);
