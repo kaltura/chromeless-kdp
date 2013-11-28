@@ -13,6 +13,7 @@ package com.kaltura.kdpfl.controller
 	import com.kaltura.kdpfl.util.KTextParser;
 	import com.kaltura.kdpfl.util.URLUtils;
 	import com.kaltura.kdpfl.view.controls.KTrace;
+	import com.kaltura.kdpfl.model.ExternalInterfaceProxy;
 	
 	import flash.events.AsyncErrorEvent;
 	import flash.events.ErrorEvent;
@@ -185,6 +186,9 @@ package com.kaltura.kdpfl.controller
 		}
 		
 		override protected function commandComplete():void {
+			var extProxy:ExternalInterfaceProxy = facade.retrieveProxy(ExternalInterfaceProxy.NAME) as ExternalInterfaceProxy;
+			extProxy.vo.enabled = true;
+			extProxy.registerKDPCallbacks();
 			//dispacth layout ready
 			sendNotification(NotificationType.LAYOUT_READY);
 			super.commandComplete();

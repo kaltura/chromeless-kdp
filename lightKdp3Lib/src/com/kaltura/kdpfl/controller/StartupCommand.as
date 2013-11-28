@@ -46,10 +46,6 @@ package com.kaltura.kdpfl.controller
 
             //send notification to start the macro command process
             sendNotification( NotificationType.INITIATE_APP );
-			
-			var extProxy:ExternalInterfaceProxy = facade.retrieveProxy(ExternalInterfaceProxy.NAME) as ExternalInterfaceProxy;
-			extProxy.vo.enabled = true;
-			extProxy.registerKDPCallbacks();
 		}
 		
 	}
