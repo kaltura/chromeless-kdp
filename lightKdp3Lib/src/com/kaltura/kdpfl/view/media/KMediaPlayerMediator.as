@@ -583,9 +583,10 @@ package com.kaltura.kdpfl.view.media
 					break;
 				
 				case NotificationType.GO_LIVE:
-					if (_mediaProxy.vo.isLive)
+					if (_mediaProxy.vo.isLive && _mediaProxy.vo.canSeek)
 					{
-						sendNotification(NotificationType.DO_SEEK, _duration);
+						if (_hasPlayed && _inDvr)
+							sendNotification(NotificationType.DO_SEEK, _duration);
 						
 						sendNotification(NotificationType.DO_PLAY);
 					}
