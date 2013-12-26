@@ -35,6 +35,7 @@ package com.kaltura.kdpfl.controller.media
 		 * defines the content of the liveStreamReady notification. 
 		 */		
 		public static const LIVE_STREAM_READY:String = "liveStreamReady";
+		public static const LIVE_STREAM_OFFLINE:String = "liveStreamOffline";
 		public static const DEFAULT_IS_LIVE_INTERVAL:int = 30;
 		
 		namespace xmlns = "http://ns.adobe.com/f4m/1.0";
@@ -54,7 +55,7 @@ package com.kaltura.kdpfl.controller.media
 		/**
 		 * indicates previous result from "isLive" API 
 		 */		
-		private var _wasLive:Boolean;	
+		private var _wasLive:Boolean = false;	
 			
 		
 		public function LiveStreamCommand()
@@ -195,13 +196,20 @@ package com.kaltura.kdpfl.controller.media
 			//Check whether the stream's current FPS is greater than 0. If it is then the timer is stopped, and the live stream starts playing as an entry.
 			if(_netStream.currentFPS > 0 || _netStream.info.audioByteCount)
 			{
-				_liveStreamTimer.removeEventListener(TimerEvent.TIMER,onTick);
-				_liveStreamTimer.removeEventListener(TimerEvent.TIMER_COMPLETE, onTimerComplete);
-				_liveStreamTimer.stop();
-				_netStream.close();
-				_nc.close();
-				sendNotification(NotificationType.ENABLE_GUI, {guiEnabled : true , enableType : EnableType.CONTROLS});
-				sendNotification(LIVE_STREAM_READY);
+				//_liveStreamTimer.removeEventListener(TimerEvent.TIMER,onTick);
+				//_liveStreamTimer.removeEventListener(TimerEvent.TIMER_COMPLETE, onTimerComplete);
+				//_liveStreamTimer.stop();
+				//_netStream.close();
+				//_nc.close();
+				if ( !_wasLive ) {
+					sendNotification(NotificationType.ENABLE_GUI, {guiEnabled : true , enableType : EnableType.CONTROLS});
+					sendNotification(LIVE_STREAM_READY);
+					_wasLive = true;
+				}
+			}
+			else {
+				sendNotification(LIVE_STREAM_OFFLINE);
+				_wasLive = false;
 			}
 		}
 	}
