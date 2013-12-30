@@ -57,7 +57,7 @@ package com.kaltura.kdpfl.controller
 				var pluginParams:Object = flashvars[pluginName];
 				if (pluginParams && (pluginParams is String) && (pluginParams as String).indexOf("{") == 0)
 					pluginParams = JSON.decode( pluginParams as String);
-				if (pluginParams && pluginParams.hasOwnProperty('plugin') && pluginParams['plugin'] == 'true')
+				if (pluginParams && pluginParams.hasOwnProperty('plugin') && (pluginParams['plugin'] == 'true' || pluginParams['plugin'] == true))
 				{
 					hasPlugins = true;
 					//see if we need to wait for this plugin to load (loadingPolicy == "wait")
