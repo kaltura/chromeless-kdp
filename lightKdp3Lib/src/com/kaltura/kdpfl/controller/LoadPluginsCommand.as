@@ -129,7 +129,8 @@ package com.kaltura.kdpfl.controller
 				var val:String = attributesObj[attr];
 				try
 				{
-					KTextParser.bind(plugin.content, attr , facade['bindObject'], val);
+					plugin.content[attr] = val;
+					//KTextParser.bind(plugin.content, attr , facade['bindObject'], val);
 				}
 				catch(e:Error){
 					if(_config.vo.flashvars.debugMode)
