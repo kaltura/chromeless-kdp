@@ -13,6 +13,8 @@ package
 	
 	public class VPaidPlugin extends Sprite implements IPluginFactory, IPlugin
 	{	
+		public var adParameters:String;
+		
 		public function VPaidPlugin()
 		{
 			Security.allowDomain("*");
@@ -25,7 +27,7 @@ package
 		
 		public function initializePlugin(facade:IFacade):void
 		{
-			var vpaidMediator:VPaidPluginMediator = new VPaidPluginMediator();
+			var vpaidMediator:VPaidPluginMediator = new VPaidPluginMediator( adParameters );
 			facade.registerMediator(vpaidMediator);
 		}
 		
