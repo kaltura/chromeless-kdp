@@ -72,7 +72,7 @@ package com.kaltura.kdpfl.controller
 				flashvars.disableOnScreenClick = false;
 			}
 				
-			mediaProxy.vo.entryUrl = flashvars.entryUrl;
+			mediaProxy.vo.entryUrl = unescape( flashvars.entryUrl );
 			ApplicationFacade.getInstance().debugMode = (flashvars.debugMode == "true") ?  true : false;
 			ApplicationFacade.getInstance().debugLevel = (flashvars.debugLevel) ?  flashvars.debugLevel : DebugLevel.LOW;
 			
