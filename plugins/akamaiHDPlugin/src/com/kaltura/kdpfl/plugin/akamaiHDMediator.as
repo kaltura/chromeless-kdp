@@ -5,6 +5,8 @@ package com.kaltura.kdpfl.plugin
 	import com.kaltura.kdpfl.model.MediaProxy;
 	import com.kaltura.kdpfl.model.type.NotificationType;
 	import com.kaltura.kdpfl.view.media.KMediaPlayerMediator;
+	import org.osmf.media.MediaElement;
+	import org.osmf.elements.ProxyElement;
 	
 	import org.osmf.events.MediaElementEvent;
 	import org.osmf.traits.DVRTrait;
@@ -46,7 +48,8 @@ package com.kaltura.kdpfl.plugin
 			return [
 				NotificationType.MEDIA_READY,
 				NotificationType.PLAYER_PLAYED,
-				NotificationType.MEDIA_ELEMENT_READY
+				NotificationType.MEDIA_ELEMENT_READY,
+				NotificationType.MEDIA_LOADED
 			];
 		}
 		
@@ -121,7 +124,22 @@ package com.kaltura.kdpfl.plugin
 						
 					}
 					break;
+				case NotificationType.MEDIA_LOADED:
+					//get embedded text, if exists
+					var media : MediaElement = _mediaProxy.vo.media;
+					while (media is ProxyElement)
+					{
+						media = (media as ProxyElement).proxiedElement;
+					} 
+					if (media.hasOwnProperty("client") && media["client"]) {
+						media["client"].addHandler( "onTextData", onEmbeddedCaptions );
+					}
+					break;
 			}
+		}
+		
+		private function onEmbeddedCaptions (info: Object)  : void {
+			sendNotification("loadEmbeddedCaptions", info);
 		}
 		
 		
