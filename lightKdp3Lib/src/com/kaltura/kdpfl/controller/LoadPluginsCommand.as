@@ -129,7 +129,13 @@ package com.kaltura.kdpfl.controller
 				var val:String = attributesObj[attr];
 				try
 				{
-					plugin.content[attr] = val;
+					if ( plugin.content[attr] is Boolean)
+					{
+						plugin.content[attr]  = val == "true" || false;
+					} else {
+						plugin.content[attr] = val;
+					}
+					
 					//KTextParser.bind(plugin.content, attr , facade['bindObject'], val);
 				}
 				catch(e:Error){
