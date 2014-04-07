@@ -35,7 +35,12 @@ package com.kaltura.kdpfl.model
 	import org.osmf.net.StreamType;
 	import org.osmf.net.StreamingURLResource;
 	import org.puremvc.as3.patterns.proxy.Proxy;
-	
+    import org.osmf.layout.LayoutMetadata;
+    import org.osmf.layout.HorizontalAlign;
+    import org.osmf.layout.VerticalAlign;
+    import org.osmf.layout.ScaleMode;
+    import org.osmf.layout.LayoutMode;
+    
 	/**
 	 * This class is the proxy for the media playing in the media player.
 	 * 
@@ -391,6 +396,19 @@ package com.kaltura.kdpfl.model
 						mediaElement["smoothing"] = true;
 					if (mediaElement.hasOwnProperty("client") && mediaElement["client"])
 						mediaElement["client"].addHandler(NetStreamCodes.ON_META_DATA, onMetadata);
+                    
+                    if ( _flashvars.stretchVideo ) {
+                        var layout:LayoutMetadata = new LayoutMetadata();
+                        layout.percentWidth  = 100;
+                        layout.percentHeight = 100;
+                        layout.layoutMode = LayoutMode.HORIZONTAL;
+                        layout.horizontalAlign = HorizontalAlign.CENTER;
+                        layout.verticalAlign = VerticalAlign.TOP;
+                        layout.scaleMode = ScaleMode.STRETCH;
+                        
+                        mediaElement.removeMetadata(LayoutMetadata.LAYOUT_NAMESPACE);
+                        mediaElement.addMetadata(LayoutMetadata.LAYOUT_NAMESPACE, layout);
+                    }
 				}
 				if (_sendMediaReady)
 				{
