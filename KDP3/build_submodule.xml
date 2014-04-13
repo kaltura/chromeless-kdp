@@ -1,0 +1,33 @@
+<project name="BuildSubmodule" default="run" basedir=".">
+	<property name="submodule_path" value="/Applications/XAMPP/xamppfiles/htdocs/chromeless-kdp/HLS-OSMF"/>
+	<property name="project_name" value="KalturaHLSPlugin"/>
+	<property name="build" value="build-release"/>
+	<property name="destDir" value="/Applications/XAMPP/xamppfiles/htdocs/html5.kaltura/mwEmbed/modules/EmbedPlayer/binPlayers/kaltura-player/plugins"/>
+	
+	<!-- sdk 4.5 -->
+	 <property name="FLEX_HOME" value="/Applications/Adobe Flash Builder 4.6/sdks/4.5.1" />
+	<!-- sdk 4.6 -->
+	 <!--property name="FLEX_HOME" value="/Applications/Adobe Flash Builder 4.6/sdks/4.6.0" /-->
+	
+	 <taskdef name="mxmlc" classname="flex.ant.MxmlcTask" classpath="${FLEX_HOME}/ant/lib/flexTasks.jar" />
+
+	<macrodef name = "git">
+	    <attribute name = "command" />
+	    <attribute name = "dir" default = "" />
+	    <element name = "args" optional = "true" />
+	    <sequential>
+	        <echo message = "git @{command}" />
+	        <exec executable = "git" dir = "@{dir}">
+	            <arg value = "@{command}" />
+	            <args/>
+	        </exec>
+	    </sequential>
+	</macrodef>
+	
+	<target name="run" description="Deletes Created Dir">
+		<git command = "pull" dir = "${submodule_path}" />
+		<fb.exportReleaseBuild failonerror="true" project="${project_name}" destdir="${build}"/>
+    	 <copy todir="${destDir}" file="${submodule_path}/${project_name}/${build}/${project_name}.swf"/>
+	</target>
+
+</project>
