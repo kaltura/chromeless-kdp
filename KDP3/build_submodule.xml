@@ -24,7 +24,7 @@
 	    </sequential>
 	</macrodef>
 	
-	<target name="run" description="Deletes Created Dir">
+	<target name="run" description="run">
 		<git command = "pull" dir = "${submodule_path}" />
 		<fb.exportReleaseBuild failonerror="true" project="${project_name}" destdir="${build}"/>
     	 <copy todir="${destDir}" file="${submodule_path}/${project_name}/${build}/${project_name}.swf"/>
