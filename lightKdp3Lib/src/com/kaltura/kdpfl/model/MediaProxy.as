@@ -113,7 +113,7 @@ package com.kaltura.kdpfl.model
 				case StreamerType.HDNETWORK:
 				case StreamerType.HDNETWORK_HDS:
 				case StreamerType.HDS:
-					if ( vo.isHds || vo.deliveryType == StreamerType.HDNETWORK_HDS )
+					if ( vo.sourceType != SourceType.URL && (vo.isHds || vo.deliveryType == StreamerType.HDNETWORK_HDS ))
 					{
 						var urlLoader:URLLoader = new URLLoader();
 						urlLoader.addEventListener(Event.COMPLETE, onUrlComplete);
