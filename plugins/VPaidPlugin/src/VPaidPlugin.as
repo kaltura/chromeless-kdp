@@ -12,11 +12,11 @@ package
     import org.puremvc.as3.interfaces.IFacade;
     
     
-    public class VPaidPlugin extends Sprite implements IPluginFactory, IPlugin
+    public class vpaidPlugin extends Sprite implements IPluginFactory, IPlugin
     {    
         public var adParameters:String;
         
-        public function VPaidPlugin()
+        public function vpaidPlugin()
         {
             Security.allowDomain("*");
         }

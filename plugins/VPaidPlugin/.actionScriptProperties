@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<actionScriptProperties analytics="false" mainApplicationPath="VPaidPlugin.as" projectUUID="9d94e333-9dc1-438b-8f05-ea4018e346d3" version="10">
+<actionScriptProperties analytics="false" mainApplicationPath="vpaidPlugin.as" projectUUID="9d94e333-9dc1-438b-8f05-ea4018e346d3" version="10">
   <compiler additionalCompilerArguments="-load-externs ${linkReport}" autoRSLOrdering="true" copyDependentFiles="true" fteInMXComponents="false" generateAccessible="true" htmlExpressInstall="true" htmlGenerate="true" htmlHistoryManagement="true" htmlPlayerVersionCheck="true" includeNetmonSwc="false" outputFolderLocation="DOCUMENTS/KDP3/bin-debug/plugins" outputFolderPath="bin-debug" removeUnusedRSL="true" sourceFolderPath="src" strict="true" targetPlayerVersion="0.0.0" useApolloConfig="false" useDebugRSLSwfs="true" verifyDigests="true" warn="true">
     <compilerSourcePath/>
     <libraryPath defaultLinkType="0">
@@ -35,7 +35,7 @@
     <sourceAttachmentPath/>
   </compiler>
   <applications>
-    <application path="VPaidPlugin.as"/>
+    <application path="vpaidPlugin.as"/>
   </applications>
   <modules/>
   <buildCSSFiles/>
