@@ -597,6 +597,7 @@ package com.kaltura.kdpfl.view.media
 		private function doSeek(seekTo:Number):void
 		{
 			sendNotification(NotificationType.PLAYER_SEEK_START);
+			_isAfterSeek = true;
 			player.seek(seekTo);
 			if (_mediaProxy.vo.isLive)
 			{
@@ -605,7 +606,6 @@ package com.kaltura.kdpfl.view.media
 				else
 					_inDvr = true;
 			}
-			sendNotification(NotificationType.PLAYER_SEEK_END);
 		}
 		
 		/**
@@ -816,6 +816,13 @@ package com.kaltura.kdpfl.view.media
 					break;
 				case MediaPlayerState.PAUSED:
 					sendNotification( NotificationType.PLAYER_PAUSED );	
+					
+					if(_isAfterSeek)
+					{
+						_isAfterSeek = false;
+						sendNotification(NotificationType.PLAYER_SEEK_END);
+						
+					}
 					break;
 				
 				case MediaPlayerState.PLAYING: 
