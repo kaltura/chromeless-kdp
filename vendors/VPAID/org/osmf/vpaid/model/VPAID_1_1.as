@@ -24,9 +24,8 @@ package org.osmf.vpaid.model
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	
-	import org.osmf.vpaid.events.VPAIDEvent;
 	import org.osmf.vpaid.elements.VPAIDElement;
-	import org.osmf.vpaid.metadata.VPAIDMetadata;
+	import org.osmf.vpaid.events.VPAIDEvent;
 	
 	CONFIG::LOGGING
 	{
@@ -41,7 +40,7 @@ package org.osmf.vpaid.model
 	**/
 	public class VPAID_1_1 extends EventDispatcher implements IVPAIDBase
 	{
-		private var _handshakeVersions:Array = ["1.1"];
+		private var _handshakeVersions:Array = ["1.1", "1.0"];
 		private var _vpaidElement:VPAIDElement;
 
 		public var adVersion:String;
@@ -74,7 +73,8 @@ package org.osmf.vpaid.model
 			try{
 				_vpaidAPI = vpaidSWF.getVPAID();
 			}catch(e:Error){
-				_vpaidElement.error();
+				_vpaidAPI = vpaidSWF;
+				//_vpaidElement.error();
 			}
 			
 		}
