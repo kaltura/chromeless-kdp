@@ -19,6 +19,7 @@ package
         public function vpaidPlugin()
         {
             Security.allowDomain("*");
+			
         }
         
         public function create (pluginName : String =null) : IPlugin
