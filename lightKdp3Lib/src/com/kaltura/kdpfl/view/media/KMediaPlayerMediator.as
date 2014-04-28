@@ -40,6 +40,8 @@ package com.kaltura.kdpfl.view.media
 	import org.osmf.traits.TimeTrait;
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
+	import org.osmf.media.MediaElement;
+	import org.osmf.elements.ProxyElement;
 	
 	
 	/**
@@ -287,7 +289,8 @@ package com.kaltura.kdpfl.view.media
 				NotificationType.VIDEO_METADATA_RECEIVED,
 				NotificationType.PLAYER_PLAY_END,
 				NotificationType.MEDIA_ELEMENT_READY,
-				NotificationType.GO_LIVE
+				NotificationType.GO_LIVE,
+				NotificationType.MEDIA_LOADED
 			];
 		}
 		
@@ -591,7 +594,22 @@ package com.kaltura.kdpfl.view.media
 						sendNotification(NotificationType.DO_PLAY);
 					}
 					break;
+				case NotificationType.MEDIA_LOADED:
+					//get embedded text, if exists
+					var media : MediaElement = _mediaProxy.vo.media;
+					while (media is ProxyElement)
+					{
+						media = (media as ProxyElement).proxiedElement;
+					} 
+					if (media.hasOwnProperty("client") && media["client"]) {
+						media["client"].addHandler( "onTextData", onEmbeddedCaptions );
+					}
+					break;
 			}
+		}
+		
+		private function onEmbeddedCaptions (info: Object)  : void {
+			sendNotification("loadEmbeddedCaptions", info);
 		}
 		
 		private function doSeek(seekTo:Number):void
