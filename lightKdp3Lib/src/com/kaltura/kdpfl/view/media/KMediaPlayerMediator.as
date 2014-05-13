@@ -12,10 +12,7 @@ package com.kaltura.kdpfl.view.media
 	import com.kaltura.kdpfl.view.RootMediator;
 	import com.kaltura.kdpfl.view.controls.KTrace;
 	
-	import org.osmf.media.MediaPlayerSprite;
-	
 	import flash.display.DisplayObject;
-	import flash.display.DisplayObjectContainer;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
@@ -24,24 +21,28 @@ package com.kaltura.kdpfl.view.media
 	
 	import mx.utils.Base64Encoder;
 	
+	import org.osmf.elements.ProxyElement;
 	import org.osmf.events.AudioEvent;
 	import org.osmf.events.BufferEvent;
 	import org.osmf.events.DisplayObjectEvent;
 	import org.osmf.events.DynamicStreamEvent;
 	import org.osmf.events.LoadEvent;
+	import org.osmf.events.MediaElementEvent;
 	import org.osmf.events.MediaErrorEvent;
 	import org.osmf.events.MediaPlayerCapabilityChangeEvent;
 	import org.osmf.events.MediaPlayerStateChangeEvent;
+	import org.osmf.events.SeekEvent;
 	import org.osmf.events.TimeEvent;
+	import org.osmf.media.MediaElement;
 	import org.osmf.media.MediaPlayer;
+	import org.osmf.media.MediaPlayerSprite;
 	import org.osmf.media.MediaPlayerState;
+	import org.osmf.traits.DVRTrait;
 	import org.osmf.traits.DynamicStreamTrait;
 	import org.osmf.traits.MediaTraitType;
 	import org.osmf.traits.TimeTrait;
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
-	import org.osmf.media.MediaElement;
-	import org.osmf.elements.ProxyElement;
 	
 	
 	/**
@@ -221,6 +222,7 @@ package com.kaltura.kdpfl.view.media
 			player.addEventListener( LoadEvent.BYTES_LOADED_CHANGE , onBytesDownloadedChange );
 			player.addEventListener( TimeEvent.DURATION_CHANGE , onDurationChange );
 			player.addEventListener( DynamicStreamEvent.SWITCHING_CHANGE , onSwitchingChange );
+			player.addEventListener( SeekEvent.SEEKING_CHANGE , onSeekingChange );
 			
 			if(!_flashvars.disableOnScreenClick || _flashvars.disableOnScreenClick!="true")
 			{
@@ -353,6 +355,11 @@ package com.kaltura.kdpfl.view.media
 						_waitForMediaElement = false;	
 						sendNotification(NotificationType.ENABLE_GUI, {guiEnabled : true , enableType : EnableType.CONTROLS});
 						onDoPlay();
+					}
+					if (_mediaProxy.vo.isLive && _mediaProxy.vo.canSeek && _mediaProxy.vo.media)
+					{
+						_mediaProxy.vo.media.addEventListener(MediaElementEvent.TRAIT_ADD, onMediaTraitAdd);
+						
 					}
 					
 					break;
@@ -608,14 +615,28 @@ package com.kaltura.kdpfl.view.media
 			}
 		}
 		
+		/**
+		 * sets DVR window size according to actual window size (including Akamai's padding)
+		 * @param e
+		 * 
+		 */		
+		private function onMediaTraitAdd(e: MediaElementEvent) :  void
+		{
+			if (e.traitType==MediaTraitType.DVR)
+			{
+				var dvrTrait:DVRTrait = _mediaProxy.vo.media.getTrait(MediaTraitType.DVR) as DVRTrait;
+				dvrWinSize = dvrTrait.windowDuration;
+				_mediaProxy.vo.media.removeEventListener(MediaElementEvent.TRAIT_ADD, onMediaTraitAdd);
+			}
+			
+		}
+		
 		private function onEmbeddedCaptions (info: Object)  : void {
 			sendNotification("loadEmbeddedCaptions", info);
 		}
 		
 		private function doSeek(seekTo:Number):void
 		{
-			sendNotification(NotificationType.PLAYER_SEEK_START);
-			_isAfterSeek = true;
 			player.seek(seekTo);
 			if (_mediaProxy.vo.isLive)
 			{
@@ -834,13 +855,6 @@ package com.kaltura.kdpfl.view.media
 					break;
 				case MediaPlayerState.PAUSED:
 					sendNotification( NotificationType.PLAYER_PAUSED );	
-					
-					if(_isAfterSeek)
-					{
-						_isAfterSeek = false;
-						sendNotification(NotificationType.PLAYER_SEEK_END);
-						
-					}
 					break;
 				
 				case MediaPlayerState.PLAYING: 
@@ -1271,6 +1285,16 @@ package com.kaltura.kdpfl.view.media
 			else if (player.autoDynamicStreamSwitch)
 			{
 				sendNotification( NotificationType.SWITCHING_CHANGE_STARTED, {currentIndex : player.currentDynamicStreamIndex, currentBitrate: player.getBitrateForDynamicStreamIndex(player.currentDynamicStreamIndex)});
+			}
+		}
+		
+		private function onSeekingChange( event: SeekEvent ) : void 
+		{
+			if ( event.seeking ) {
+				sendNotification(NotificationType.PLAYER_SEEK_START);
+			} else {
+				sendNotification( NotificationType.PLAYER_UPDATE_PLAYHEAD , player.currentTime );
+				sendNotification(NotificationType.PLAYER_SEEK_END);
 			}
 		}
 		
