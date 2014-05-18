@@ -47,8 +47,7 @@ package com.kaltura.kdpfl.plugin
 		{
 			return [
 				NotificationType.MEDIA_READY,
-				NotificationType.PLAYER_PLAYED,
-				NotificationType.MEDIA_ELEMENT_READY
+				NotificationType.PLAYER_PLAYED
 			];
 		}
 		
@@ -115,34 +114,12 @@ package com.kaltura.kdpfl.plugin
 					
 					_flashvars["objMetadataValues"+i] = akamaiMetadataValues;
 					break;
-				
-				case NotificationType.MEDIA_ELEMENT_READY:
-					if (_mediaProxy.vo.isLive && _mediaProxy.vo.canSeek && _mediaProxy.vo.media)
-					{
-						_mediaProxy.vo.media.addEventListener(MediaElementEvent.TRAIT_ADD, onMediaTraitAdd);
-						
-					}
-					break;
+
 			}
 		}
 		
 		
 		
-		/**
-		 * sets DVR window size according to actual window size (including Akamai's padding)
-		 * @param e
-		 * 
-		 */		
-		private function onMediaTraitAdd(e: MediaElementEvent) :  void
-		{
-			if (e.traitType==MediaTraitType.DVR)
-			{
-				var dvrTrait:DVRTrait = _mediaProxy.vo.media.getTrait(MediaTraitType.DVR) as DVRTrait;
-				(facade.retrieveMediator(KMediaPlayerMediator.NAME) as KMediaPlayerMediator).dvrWinSize = dvrTrait.windowDuration;
-				_mediaProxy.vo.media.removeEventListener(MediaElementEvent.TRAIT_ADD, onMediaTraitAdd);
-			}
-			
-		}
 		
 	}
 }
