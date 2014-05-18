@@ -596,7 +596,7 @@ package com.kaltura.kdpfl.view.media
 					if (_mediaProxy.vo.isLive && _mediaProxy.vo.canSeek)
 					{
 						if (_hasPlayed && _inDvr)
-							sendNotification(NotificationType.DO_SEEK, _duration);
+							sendNotification(NotificationType.DO_SEEK, player.duration);
 						
 						sendNotification(NotificationType.DO_PLAY);
 					}
@@ -640,7 +640,7 @@ package com.kaltura.kdpfl.view.media
 			player.seek(seekTo);
 			if (_mediaProxy.vo.isLive)
 			{
-				if (seekTo==_duration)
+				if (seekTo==player.duration)
 					_inDvr = false;
 				else
 					_inDvr = true;
