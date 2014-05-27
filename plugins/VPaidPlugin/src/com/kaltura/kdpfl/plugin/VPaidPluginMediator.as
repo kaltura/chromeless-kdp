@@ -12,16 +12,16 @@ package com.kaltura.kdpfl.plugin
 	import org.osmf.media.MediaPlayer;
 	import org.osmf.media.URLResource;
 	import org.osmf.vpaid.elements.VPAIDElement;
+	import org.osmf.vpaid.metadata.VPAIDMetadata;
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
-	import org.osmf.vpaid.metadata.VPAIDMetadata;
 	
 	public class VPaidPluginMediator extends Mediator
 	{
 		public static const NAME:String = "VPaidPluginMediator";
 		
-		private var _eventsList:Array = ["AdLoaded", "AdImpression", "AdStopped", "AdError", "AdLog"];
-		
+		private var _eventsList:Array = ["AdLoaded","AdStarted","AdStopped","AdSkipped","AdSkippableStateChange","AdSizeChange","AdLinearChange","AdDurationChange","AdExpandedChange"," AdRemainingTimeChange","AdVolumeChange","AdImpression","AdVideoStart","AdVideoFirstQuartile","AdVideoMidpoint","AdVideoThirdQuartile","AdVideoComplete","AdClickThru","AdInteraction","AdUserAcceptInvitation","AdUserMinimize","AdUserClose","AdPaused","AdPlaying","AdLog","AdError"];
+				
 		private var _mediaProxy:MediaProxy;
 		private var _vpaid:VPAIDElement;
 		private var _adParameters:String;
@@ -38,7 +38,7 @@ package com.kaltura.kdpfl.plugin
 		
 		override public function listNotificationInterests():Array
 		{
-			return [NotificationType.MEDIA_ELEMENT_READY];
+			return [NotificationType.MEDIA_ELEMENT_READY, NotificationType.ROOT_RESIZE];
 		}
 		
 		override public function handleNotification(notification:INotification):void
@@ -57,10 +57,23 @@ package com.kaltura.kdpfl.plugin
 				}
 				player.media = _vpaid;
 			}
+			// handle player resize
+			if (notification.getName() == NotificationType.ROOT_RESIZE ) {
+				var dataObj:Object = new Object();
+				dataObj.width = notification.getBody().width;
+				dataObj.height = notification.getBody().height;
+				dataObj.viewMode = dataObj.width > 1000 ? "fullscreen" : "normal";
+				VPAIDMetadata(_vpaid.getMetadata("org.osmf.vpaid.metadata.VPAIDMetadata")).addValue(VPAIDMetadata.RESIZE_AD, dataObj);
+			}
 		}
 		
 		private function onEvent(e:Event):void {
-			facade.sendNotification(e.type);
+			if (e.type == "AdLinearChange"){
+				var adLinear:Boolean = VPAIDMetadata(_vpaid.getMetadata("org.osmf.vpaid.metadata.VPAIDMetadata")).getValue("adLinear");
+				facade.sendNotification(e.type, {"AdLinear": adLinear});
+			}else{
+				facade.sendNotification(e.type);
+			}					
 		}
 	}
 }
