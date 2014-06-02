@@ -26,9 +26,7 @@ package
         
         protected var _pluginURL : String = "";
         protected var _localMediaFactory : DefaultMediaFactory;
-        public var waitForSecondLoad:Boolean = true;
-        //workaround to fix OSMF bug: the OSMF is loaded twice, we should notify plugin was loaded only on the second callback
-        private var callbackCount:int;
+        private var _pluginResource : URLResource;
         
         /**
          * A-sync init of the Plugin - this function begins an a-sync load process of the 
@@ -41,11 +39,10 @@ package
             if (pluginURL)
             {
                 _localMediaFactory = (facade.retrieveProxy(MediaProxy.NAME) as MediaProxy).vo.mediaFactory;
-                var pluginResource : URLResource = new URLResource(pluginURL);
+				_pluginResource = new URLResource(pluginURL);
                 _localMediaFactory.addEventListener(MediaFactoryEvent.PLUGIN_LOAD, onOSMFPluginLoaded);
                 _localMediaFactory.addEventListener(MediaFactoryEvent.PLUGIN_LOAD_ERROR, onOSMFPluginLoadError);
-                callbackCount = 0;
-                _localMediaFactory.loadPlugin(pluginResource);
+                _localMediaFactory.loadPlugin(_pluginResource);
             }
         }
         /**
@@ -55,11 +52,10 @@ package
          */        
         protected function onOSMFPluginLoaded (e : MediaFactoryEvent) : void
         {
-            if ( callbackCount > 0 || !waitForSecondLoad ) {
+			if ( e.resource && e.resource == _pluginResource ) {
                 dispatchEvent( new KPluginEvent (KPluginEvent.KPLUGIN_INIT_COMPLETE) );
                 removeListeners();
             }
-            callbackCount++;
             
         }
         /**
@@ -69,11 +65,10 @@ package
          */        
         protected function onOSMFPluginLoadError (e : MediaFactoryEvent) : void
         {
-            if ( callbackCount > 0 || !waitForSecondLoad ) {
+			if ( e.resource && e.resource == _pluginResource ) {
                 dispatchEvent( new KPluginEvent (KPluginEvent.KPLUGIN_INIT_FAILED) );
                 removeListeners();
-            }        
-            callbackCount++; 
+            }
         }
         
         public function setSkin(styleName:String, setSkinSize:Boolean=false):void

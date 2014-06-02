@@ -26,7 +26,7 @@ package
 	 */	
 	public class akamaiMediaAnalyticsPluginCode extends UIComponent implements IPlugin
 	{
-		
+		private var _pluginResource:MediaResourceBase
 		private var _swfPath:String;
 		private var _configPath:String;
 		public var securedConfigPath:String;
@@ -72,15 +72,15 @@ package
 			
 			//Getting Static reference to Plugin.
 			var pluginInfoRef:Class = getDefinitionByName("com.akamai.playeranalytics.osmf.OSMFCSMALoaderInfo") as Class;
-			var pluginResource:MediaResourceBase = new PluginInfoResource(new pluginInfoRef);
+			_pluginResource = new PluginInfoResource(new pluginInfoRef);
 			//Setting CSMA Plugin & Configuration data
-			pluginResource.addMetadataValue("csmaPluginPath", secured && securedSwfPath ? securedSwfPath : _swfPath);
-			pluginResource.addMetadataValue("csmaConfigPath",secured && securedConfigPath ? securedConfigPath : _configPath);
+			_pluginResource.addMetadataValue("csmaPluginPath", secured && securedSwfPath ? securedSwfPath : _swfPath);
+			_pluginResource.addMetadataValue("csmaConfigPath",secured && securedConfigPath ? securedConfigPath : _configPath);
 	
 			var mediaFactory:MediaFactory = (facade.retrieveProxy(MediaProxy.NAME) as MediaProxy).vo.mediaFactory;
 			mediaFactory.addEventListener(MediaFactoryEvent.PLUGIN_LOAD, onOSMFPluginLoaded);
 			mediaFactory.addEventListener(MediaFactoryEvent.PLUGIN_LOAD_ERROR, onOSMFPluginLoadError);
-			mediaFactory.loadPlugin(pluginResource);		
+			mediaFactory.loadPlugin(_pluginResource);		
 		}
 		
 		/**
@@ -90,8 +90,10 @@ package
 		 */		
 		protected function onOSMFPluginLoaded (e : MediaFactoryEvent) : void
 		{
-			e.target.removeEventListener(MediaFactoryEvent.PLUGIN_LOAD, onOSMFPluginLoaded);
-			dispatchEvent( new KPluginEvent (KPluginEvent.KPLUGIN_INIT_COMPLETE) );
+			if ( e.resource && e.resource == _pluginResource ) {
+				e.target.removeEventListener(MediaFactoryEvent.PLUGIN_LOAD, onOSMFPluginLoaded);
+				dispatchEvent( new KPluginEvent (KPluginEvent.KPLUGIN_INIT_COMPLETE) );
+			}
 		}
 		/**
 		 * Listener for the LOAD_ERROR event.
@@ -100,8 +102,10 @@ package
 		 */		
 		protected function onOSMFPluginLoadError (e : MediaFactoryEvent) : void
 		{
-			e.target.removeEventListener(MediaFactoryEvent.PLUGIN_LOAD_ERROR, onOSMFPluginLoaded);
-			dispatchEvent( new KPluginEvent (KPluginEvent.KPLUGIN_INIT_FAILED) );
+			if ( e.resource && e.resource == _pluginResource ) {
+				e.target.removeEventListener(MediaFactoryEvent.PLUGIN_LOAD_ERROR, onOSMFPluginLoaded);
+				dispatchEvent( new KPluginEvent (KPluginEvent.KPLUGIN_INIT_FAILED) );
+			}
 		}
 		
 		public function setSkin(styleName:String, setSkinSize:Boolean=false):void

@@ -22,6 +22,7 @@ package
 		
 		private static const AKAMAI_PLUGIN_INFO:String = "com.akamai.osmf.AkamaiAdvancedStreamingPluginInfo";
 		private static const dummyRef:AkamaiAdvancedStreamingPluginInfo = null;
+		private var _pluginResource:MediaResourceBase
 		
 		public function akamaiHDPlugin()
 		{
@@ -40,12 +41,12 @@ package
 			
 			//Getting Static reference to Plugin.
 			var pluginInfoRef:Class = getDefinitionByName(AKAMAI_PLUGIN_INFO) as Class;
-			var pluginResource:MediaResourceBase = new PluginInfoResource(new pluginInfoRef);
+			_pluginResource = new PluginInfoResource(new pluginInfoRef);
 			
 			var mediaFactory:MediaFactory = (facade.retrieveProxy(MediaProxy.NAME) as MediaProxy).vo.mediaFactory;
 			mediaFactory.addEventListener(MediaFactoryEvent.PLUGIN_LOAD, onOSMFPluginLoaded);
 			mediaFactory.addEventListener(MediaFactoryEvent.PLUGIN_LOAD_ERROR, onOSMFPluginLoadError);
-			mediaFactory.loadPlugin(pluginResource);		
+			mediaFactory.loadPlugin(_pluginResource);		
 		}
 		
 		/**
@@ -55,8 +56,11 @@ package
 		 */		
 		protected function onOSMFPluginLoaded (e : MediaFactoryEvent) : void
 		{
-			e.target.removeEventListener(MediaFactoryEvent.PLUGIN_LOAD, onOSMFPluginLoaded);
-			dispatchEvent( new KPluginEvent (KPluginEvent.KPLUGIN_INIT_COMPLETE) );
+			if ( e.resource && e.resource == _pluginResource ) {
+				e.target.removeEventListener(MediaFactoryEvent.PLUGIN_LOAD, onOSMFPluginLoaded);
+				dispatchEvent( new KPluginEvent (KPluginEvent.KPLUGIN_INIT_COMPLETE) );
+			}
+			
 		}
 		/**
 		 * Listener for the LOAD_ERROR event.
@@ -65,8 +69,11 @@ package
 		 */		
 		protected function onOSMFPluginLoadError (e : MediaFactoryEvent) : void
 		{
-			e.target.removeEventListener(MediaFactoryEvent.PLUGIN_LOAD_ERROR, onOSMFPluginLoadError);
-			dispatchEvent( new KPluginEvent (KPluginEvent.KPLUGIN_INIT_FAILED) );
+			if ( e.resource && e.resource == _pluginResource ) {
+				e.target.removeEventListener(MediaFactoryEvent.PLUGIN_LOAD_ERROR, onOSMFPluginLoadError);
+				dispatchEvent( new KPluginEvent (KPluginEvent.KPLUGIN_INIT_FAILED) );
+			}
+			
 		}
 		
 		public function setSkin(styleName:String, setSkinSize:Boolean=false):void
