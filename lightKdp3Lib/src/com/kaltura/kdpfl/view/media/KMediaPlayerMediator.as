@@ -460,8 +460,11 @@ package com.kaltura.kdpfl.view.media
 						}
 						if (_mediaProxy.vo.isLive)
 						{
-							if (!player.canPause)
+							if (!player.canPause || !player.canSeek) {
 								player.stop();
+								//to reload the media
+								_mediaProxy.shouldWaitForElement = true;
+							}
 							//trigger liveStreamCommand to check for liveStream state again
 							//if we are offline then the "live" check timer is already running
 							sendNotification(NotificationType.LIVE_ENTRY, _mediaProxy.vo.resource); 
