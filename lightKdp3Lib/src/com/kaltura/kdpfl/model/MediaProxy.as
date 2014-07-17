@@ -113,7 +113,7 @@ package com.kaltura.kdpfl.model
 				case StreamerType.HDNETWORK:
 				case StreamerType.HDNETWORK_HDS:
 				case StreamerType.HDS:
-					if ( vo.sourceType != SourceType.URL && (vo.isHds || vo.deliveryType == StreamerType.HDNETWORK_HDS ))
+					if ( vo.sourceType != SourceType.URL && vo.isTwoPhaseManifest )
 					{
 						var urlLoader:URLLoader = new URLLoader();
 						urlLoader.addEventListener(Event.COMPLETE, onUrlComplete);
@@ -138,7 +138,7 @@ package com.kaltura.kdpfl.model
 				endIndex = resourceUrl.length;
 			var postfix:String = resourceUrl.substring(endIndex-4, endIndex);
 			//url resource
-			if (vo.sourceType == SourceType.URL || postfix!=".f4m" || vo.deliveryType == StreamerType.HDNETWORK || vo.deliveryType == StreamerType.HDNETWORK_HDS || vo.isHds)
+			if (vo.sourceType == SourceType.URL || postfix!=".f4m" || vo.deliveryType == StreamerType.HDNETWORK || vo.isTwoPhaseManifest || vo.isHds)
 			{
 				resource = new StreamingURLResource(resourceUrl, StreamType.LIVE_OR_RECORDED);
 				addMetadataToResource(resource);

@@ -39,8 +39,10 @@ package com.kaltura.kdpfl.controller
 				mediaProxy.vo.sourceType = flashvars.sourceType;
 			
 			if ((flashvars.hasOwnProperty("twoPhaseManifest") && flashvars.twoPhaseManifest == "true") 
-				|| flashvars.streamerType == StreamerType.HDNETWORK_HDS 
-				|| flashvars.streamerType == StreamerType.HDS )
+				|| flashvars.streamerType == StreamerType.HDNETWORK_HDS )
+				mediaProxy.vo.isTwoPhaseManifest = true;
+			
+			if ( flashvars.streamerType == StreamerType.HDNETWORK_HDS || flashvars.streamerType  == StreamerType.HDS )
 				mediaProxy.vo.isHds = true;
 			
 			// if mediaProtocol wasnt specified implicitly and we are using http delivery use the httpProtcol

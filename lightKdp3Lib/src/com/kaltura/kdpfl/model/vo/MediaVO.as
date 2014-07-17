@@ -239,7 +239,13 @@ package com.kaltura.kdpfl.model.vo
 		/**
 		 * If the current entry is HDS
 		 */	
-		public var isHds:Boolean = false;	
+		public var isHds:Boolean = false;
+		
+		[Bindable] 
+		/**
+		 * If manifest url should be loaded in two phases
+		 */	
+		public var isTwoPhaseManifest:Boolean = false;	
 		
 		[Bindable] 
 		/**
