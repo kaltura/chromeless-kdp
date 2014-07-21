@@ -102,15 +102,15 @@ package org.puremvc.as3.patterns.observer
 			
 			//If the handleNotification method fails internally, the notification needs to carry on being 
 			//delivered to other listeners.
-			try
-			{
+			//try
+			//{
 				this.getNotifyMethod().apply(this.getNotifyContext(),[notification]);
-			}
+			/*}
 			catch(e : Error)
 			{
 				KTrace.getInstance().log("--Exception while notifying " + notification.getName() + ": " + e.message); 
 				return;
-			}
+			}*/
 		}
 	
 		/**
