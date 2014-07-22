@@ -141,9 +141,6 @@ package
 			_facade			= facade;
 			
 			facade.registerMediator(_mediator);
-			//_mediator.eventDispatcher.addEventListener(DoubleclickMediator.INIT_PREROLL, initAd);
-			//_mediator.eventDispatcher.addEventListener(DoubleclickMediator.INIT_POSTROLL, initAd);
-			//_mediator.eventDispatcher.addEventListener(DoubleclickMediator.INIT_MIDROLL, initAd);
 			_mediator.eventDispatcher.addEventListener(NotificationType.CHANGE_MEDIA, runReset);
 			_mediator.eventDispatcher.addEventListener(NotificationType.PLAYBACK_COMPLETE, playbackComplete);
 			_mediator.eventDispatcher.addEventListener(NotificationType.DO_REPLAY, runReset);
@@ -171,50 +168,6 @@ package
 				_adsLoader.loader.contentComplete();
 			}
 		}
-		/*
-		public function initAd(e:Event =  null):void{
-		//			if(e)
-		//			if(e.type	== doubleClickMediator.INIT_PREROLL)runReset();
-		if(!_adManagers)
-		_adManagers	= new Array();
-		
-		if(!_sequenceProxy)
-		_sequenceProxy	= (_facade.retrieveProxy("sequenceProxy") as SequenceProxy);
-		
-		if(!_playerMediator)
-		_playerMediator	= (_facade.retrieveMediator("kMediaPlayerMediator") as KMediaPlayerMediator);
-		
-		if(!_mediaProxy)
-		_mediaProxy		= (_facade.retrieveMediator("mediaProxy") as MediaProxy);
-		
-		
-		if(!_background){
-		_background		= new Sprite();
-		_background.graphics.beginFill(bgColor);
-		_background.graphics.drawRect(0,0,this.width,this.height);
-		_background.graphics.endFill();
-		}
-		
-		
-		
-		var adTag:String	= getAdTagUrl();
-		
-		if(adTag == ""){
-		trace("[DOUBLECLICK]	- no adTagsFound");
-		return;//no adTags  found
-		}
-		
-		_adContext			= _mediator.adContext;
-		
-		log("initialize	 : "+_adContext);
-		log("initialize	 : AdTag:	"+decodeURIComponent(adTag));
-		
-		//return response if no adTag found. 
-		if(!adTag && preSequence > -1)this.contentResumeRequestedHandler();
-		
-		requestAds(adTag);
-		
-		}*/
 		
 		public function requestAdExternal(adData:Object):void{
 			
@@ -277,16 +230,11 @@ package
 			// The AdsRequest encapsulates all the properties required to request ads.
 			var adsRequest:AdsRequest = new AdsRequest();
 			adsRequest.adTagUrl = adTag;
-			//adsRequest.adTagUrl = "http://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=%2F3510761%2FadRulesSampleTags&ciu_szs=160x600%2C300x250%2C728x90&cust_params=adrule%3Dpremidpostpodandbumpers&impl=s&gdfp_req=1&env=vp&ad_rule=1&vid=47570401&cmsid=481&output=xml_vast2&unviewed_position_start=1&url=[referrer_url]&correlator=[timestamp]";//adTag;
 			adsRequest.disableCompanionAds	= disableCompanionAds;
 			adsRequest.linearAdSlotWidth 	= this.width;
 			adsRequest.linearAdSlotHeight 	= this.height;
 			adsRequest.nonLinearAdSlotWidth = this.width;
 			adsRequest.nonLinearAdSlotHeight = this.height;
-
-
-			//	if(contentId)
-			//		adsRequest.contentId			= contentId;
 			
 			var loaderType:AdsLoader;
 			if(_adsLoader.type != "adRule"){
@@ -306,9 +254,6 @@ package
 				
 				loaderType			= nonAdRuleLoader;
 			}
-			//			}
-			
-			
 			
 			// Instruct AdsLoader to request ads using the AdsRequest object.
 			loaderType.requestAds(adsRequest);
@@ -330,11 +275,10 @@ package
 				time:function():Number {
 					var playTime:Number = _playerMediator.player.currentTime;
 					//correct the .25 sec delay on ads during adrule playback
-					playTime	= _mediator.playheadTime;//(playTime)*1000;
+					playTime	= _mediator.playheadTime;
 					if(playTime < 0){
 						playTime = 0;
 					}
-					//trace(playTime);
 					return playTime; // Make time in ms.
 				}
 			} // convert to milliseconds.
@@ -478,14 +422,7 @@ package
 				}catch(e:Error){
 					trace("Error on adsManager.init call");
 				}
-				/*
-				if(!_background){
-				_background		= new Sprite();
-				_background.graphics.beginFill(0x000000);
-				_background.graphics.drawRect(0,0,this.width,this.height);
-				_background.graphics.endFill();					
-				
-				}*/
+
 				var rootMediator:RootMediator = _facade.retrieveMediator(RootMediator.NAME) as RootMediator;
 				rootMediator.root.addChild(adsManager.adsContainer);						
 
@@ -644,30 +581,6 @@ package
 		 * The AdsManager raises this event when it requests the publisher to resume
 		 * the content.
 		 */
-		/*
-		private function contentResumeRequestedHandler(event:AdEvent	= null):void 
-		{	
-		log("contentResumeRequestedHandler	isAdRulex:"+_isAdRule +"		:isLinear : ");
-		_facade.sendNotification("contentResumeRequested");
-		// Rewire controls to affect content instead of the ads manager.
-		//tell sequence proxy, hey this sequence item is done. do your thang. 
-		
-		//we tell it that we're done if the current ad was requested by the sequenceProxy
-		if(_sequenceProxy.vo.isInSequence)
-		_facade.sendNotification(NotificationType.SEQUENCE_ITEM_PLAY_END);
-		
-		//adRules are not managed by the sequenceProxy, so we force playback
-		if(!_mediator.playbackComplete)
-		_facade.sendNotification(NotificationType.DO_PLAY);
-		
-		//			if(event){
-		//				_facade.sendNotification(NotificationType.DO_PLAY);
-		//			}
-		
-		adInProgress		= false;
-		_mediator.enableControls();
-		
-		}*/
 		private function contentResumeRequestedHandler(event:AdEvent	= null):void 
 		{	
 			adInProgress		= false;
@@ -687,10 +600,6 @@ package
 				//this is called when there's an adRule and midrolls are complete
 				_facade.sendNotification(NotificationType.DO_PLAY);
 			}
-			
-			
-			
-			
 		}
 		
 		/**
