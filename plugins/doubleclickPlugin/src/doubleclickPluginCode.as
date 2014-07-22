@@ -502,11 +502,12 @@ package
 		 * if there's an error loading ads.
 		 */
 		private function adsLoadErrorHandler(event:AdErrorEvent):void 
-		{
+		{			
 			log("adsLoadErrorHandler ERROR.CODE:		"+event.error.errorCode);
 			log("adsLoadErrorHandler ERROR.MESSAGE:	"+event.error.errorMessage);
 			log("adsLoadErrorHandler ERROR.AD_IDS:	"+event.error.adIds);
 			log("adsLoadErrorHandler ERROR.ERROR_TYPE:"+event.error.errorType);
+			_facade.sendNotification("adsLoadError");
 			contentResumeRequestedHandler();
 			_mediator.sendNotification(NotificationType.DO_PLAY);
 		}
@@ -553,10 +554,14 @@ package
 					{
 						_adManagers[i].adsContainer.parent.removeChildAt(_adManagers[i].adsContainer);						
 						
-					}					
-					_adManagers[i].destroy();
+					}	
+					try{
+						_adManagers[i].destroy();
+					}catch(e:Error){}
 				}else if(arg0 == "all"){
-					_adManagers[i].destroy();
+					try{
+						_adManagers[i].destroy();
+					}catch(e:Error){}
 				}
 			}
 			
@@ -674,7 +679,7 @@ package
 			//we tell it that we're done if the current ad was requested by the sequenceProxy
 			if(_sequenceProxy.vo.isInSequence && !event.ad)
 				_facade.sendNotification(NotificationType.SEQUENCE_ITEM_PLAY_END);
-			else if (event.ad){
+			else if (event && event.ad){
 				if(!event.ad.linear && _sequenceProxy.vo.isInSequence)
 					_facade.sendNotification(NotificationType.SEQUENCE_ITEM_PLAY_END);
 			}
