@@ -125,7 +125,9 @@ package com.kaltura.kdpfl.plugin.component
 				NotificationType.HAS_CLOSED_FULL_SCREEN,
 				NotificationType.HAS_OPENED_FULL_SCREEN,
 				NotificationType.ROOT_RESIZE,
-				"adStarted"
+				"adStarted",
+				"requestAds",
+				"destroy"
 			];
 			
 			if(_plugin.trackCuePoints)
@@ -199,6 +201,12 @@ package com.kaltura.kdpfl.plugin.component
 						eventDispatcher.dispatchEvent(new Event(NotificationType.DO_REPLAY));
 					}
 					
+					break;
+				case "requestAds":
+					_plugin.requestAdExternal(data);
+					break;
+				case "destroy":
+					_plugin.destroyAdsManager("all");
 					break;
 			}
 		}

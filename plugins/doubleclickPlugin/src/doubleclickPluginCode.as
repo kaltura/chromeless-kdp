@@ -8,42 +8,29 @@ package
 	import com.google.ads.ima.api.AdsManagerLoadedEvent;
 	import com.google.ads.ima.api.AdsRenderingSettings;
 	import com.google.ads.ima.api.AdsRequest;
-	import com.google.ads.ima.api.CompanionAd;
 	import com.google.ads.ima.api.CompanionAdEnvironments;
-	import com.google.ads.ima.api.CompanionAdSelectionSettings;
 	import com.google.ads.ima.api.FlashCompanionAd;
 	import com.google.ads.ima.api.HtmlCompanionAd;
-	import com.google.ads.ima.api.ImaSdkSettings;
 	import com.google.ads.ima.api.ViewModes;
-	import com.google.ads.ima.wrappers.ImaSdkSettingsWrapper;
 	import com.kaltura.kdpfl.model.MediaProxy;
 	import com.kaltura.kdpfl.model.SequenceProxy;
 	import com.kaltura.kdpfl.model.type.NotificationType;
 	import com.kaltura.kdpfl.model.type.SequenceContextType;
 	import com.kaltura.kdpfl.plugin.IPlugin;
-	import com.kaltura.kdpfl.plugin.IPluginFactory;
 	import com.kaltura.kdpfl.plugin.ISequencePlugin;
 	import com.kaltura.kdpfl.plugin.component.DoubleclickMediator;
+	import com.kaltura.kdpfl.view.RootMediator;
 	import com.kaltura.kdpfl.view.media.KMediaPlayerMediator;
 	
 	import fl.core.UIComponent;
 	
-	import flash.display.DisplayObjectContainer;
 	import flash.display.Sprite;
 	import flash.events.Event;
-	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
-	import flash.media.Video;
 	import flash.system.Security;
-	import flash.text.TextField;
 	import flash.utils.Timer;
 	
-	import org.osmf.events.MediaPlayerStateChangeEvent;
-	import org.osmf.media.MediaElement;
-	import org.osmf.media.MediaFactory;
-	import org.osmf.media.URLResource;
 	import org.puremvc.as3.interfaces.IFacade;
-	import org.puremvc.as3.interfaces.IProxy;
 	
 	public dynamic class doubleclickPluginCode extends UIComponent implements IPlugin, ISequencePlugin
 	{
@@ -92,9 +79,6 @@ package
 		//placeholder for flash companion ad
 		public var companionContainerId:String;
 		
-		//background color
-		public var bgColor:uint			= 0x000000;
-		
 		public var adInProgress:Boolean		= false;
 		// SDK Objects
 		private var _adsLoader:Object = {"loader":null, "type":null};
@@ -113,7 +97,6 @@ package
 		private var _facade:IFacade;
 		//inspect first loaded ad to see if it has cuepoints. cuepoint == adRule  
 		private var _isAdRule:Boolean	= 	false;
-		//used to cover the viewing area so images behind the plugin are not visible. 
 		private var _background:Sprite;
 		
 		/////////////////TEST AD TAG URLS\\\\\\\\\\\\\\\\\\\\
@@ -145,12 +128,12 @@ package
 		{
 			return _adTagUrl;
 		}
-
+		
 		public function set adTagUrl(value:String):void
 		{
 			_adTagUrl = unescape(value);
 		}
-
+		
 		public function initializePlugin(facade:IFacade):void
 		{
 			
@@ -158,13 +141,9 @@ package
 			_facade			= facade;
 			
 			facade.registerMediator(_mediator);
-			_mediator.eventDispatcher.addEventListener(DoubleclickMediator.INIT_PREROLL, initAd);
-			_mediator.eventDispatcher.addEventListener(DoubleclickMediator.INIT_POSTROLL, initAd);
-			_mediator.eventDispatcher.addEventListener(DoubleclickMediator.INIT_MIDROLL, initAd);
 			_mediator.eventDispatcher.addEventListener(NotificationType.CHANGE_MEDIA, runReset);
 			_mediator.eventDispatcher.addEventListener(NotificationType.PLAYBACK_COMPLETE, playbackComplete);
 			_mediator.eventDispatcher.addEventListener(NotificationType.DO_REPLAY, runReset);
-			
 		}  
 		
 		/**
@@ -185,12 +164,13 @@ package
 		private function playbackComplete(e:Event):void{
 			log("playbackComplete!");
 			_contentComplete	= true;
-			_adsLoader.loader.contentComplete();
+			if (_adsLoader.loader){
+				_adsLoader.loader.contentComplete();
+			}
 		}
 		
-		public function initAd(e:Event =  null):void{
-			//			if(e)
-			//			if(e.type	== doubleClickMediator.INIT_PREROLL)runReset();
+		public function requestAdExternal(adData:Object):void{
+			
 			if(!_adManagers)
 				_adManagers	= new Array();
 			
@@ -203,32 +183,13 @@ package
 			if(!_mediaProxy)
 				_mediaProxy		= (_facade.retrieveMediator("mediaProxy") as MediaProxy);
 			
-			
-			if(!_background){
-				_background		= new Sprite();
-				_background.graphics.beginFill(bgColor);
-				_background.graphics.drawRect(0,0,this.width,this.height);
-				_background.graphics.endFill();
-			}
-			
-			
-			
-			var adTag:String	= getAdTagUrl();
-			
-			if(adTag == ""){
-				trace("[DOUBLECLICK]	- no adTagsFound");
-				return;//no adTags  found
-			}
-			
 			_adContext			= _mediator.adContext;
 			
-			log("initialize	 : "+_adContext);
-			log("initialize	 : AdTag:	"+decodeURIComponent(adTag));
+			this.width = adData.adType == "linear" ? adData.linearAdSlotWidth : adData.nonLinearAdSlotWidth;
+			this.height = adData.adType == "linear" ? adData.linearAdSlotHeight : adData.nonLinearAdSlotHeight;
 			
-			//return response if no adTag found. 
-			if(!adTag && preSequence > -1)this.contentResumeRequestedHandler();
+			requestAds(unescape(adData.adTagUrl));
 			
-			requestAds(adTag);
 			
 		}
 		
@@ -264,6 +225,8 @@ package
 		public function requestAds(adTag:String):void { 
 			log("requestAds");
 			
+
+			
 			// The AdsRequest encapsulates all the properties required to request ads.
 			var adsRequest:AdsRequest = new AdsRequest();
 			adsRequest.adTagUrl = adTag;
@@ -271,10 +234,8 @@ package
 			adsRequest.linearAdSlotWidth 	= this.width;
 			adsRequest.linearAdSlotHeight 	= this.height;
 			adsRequest.nonLinearAdSlotWidth = this.width;
-			adsRequest.nonLinearAdSlotHeight = this.width;
+			adsRequest.nonLinearAdSlotHeight = this.height;
 			
-			//	if(contentId)
-			//		adsRequest.contentId			= contentId;
 			var loaderType:AdsLoader;
 			if(_adsLoader.type != "adRule"){
 				//typically the first loader request should be an adRule, so we give it global scope. 
@@ -293,9 +254,6 @@ package
 				
 				loaderType			= nonAdRuleLoader;
 			}
-			//			}
-			
-			
 			
 			// Instruct AdsLoader to request ads using the AdsRequest object.
 			loaderType.requestAds(adsRequest);
@@ -309,10 +267,7 @@ package
 		private function adsManagerLoadedHandler(event:AdsManagerLoadedEvent):void 
 		{log("adsManagerLoadedHandler");
 			// Publishers can modify the default preferences through this object.
-			var adsRenderingSettings:AdsRenderingSettings =
-				new AdsRenderingSettings();
-			
-			adsRenderingSettings.autoAlign				= true;
+			var adsRenderingSettings:AdsRenderingSettings =	new AdsRenderingSettings();
 			
 			// In order to support VMAP ads, ads manager requires an object that
 			// provides current playhead position for the content.						
@@ -320,8 +275,10 @@ package
 				time:function():Number {
 					var playTime:Number = _playerMediator.player.currentTime;
 					//correct the .25 sec delay on ads during adrule playback
-					playTime	= _mediator.playheadTime;//(playTime)*1000;
-					
+					playTime	= _mediator.playheadTime;
+					if(playTime < 0){
+						playTime = 0;
+					}
 					return playTime; // Make time in ms.
 				}
 			} // convert to milliseconds.
@@ -335,20 +292,28 @@ package
 			
 			if (adsManager) 
 			{
+				adsManager.addEventListener(AdEvent.LOADED,function(e:AdEvent):void{
+					_facade.sendNotification("adLoaded", {isLinear: e.ad.linear});
+				});
 				// Add required ads manager listeners.
 				// ALL_ADS_COMPLETED event will fire once all the ads have played. There
 				// might be more than one ad played in the case of ad pods and VMAP.
 				adsManager.addEventListener(AdEvent.ALL_ADS_COMPLETED,
 					allAdsCompletedHandler);
 				// If ad is linear, it will fire content pause request event.
-				adsManager.addEventListener(AdEvent.CONTENT_PAUSE_REQUESTED,
-					contentPauseRequestedHandler);
+				adsManager.addEventListener(AdEvent.CONTENT_PAUSE_REQUESTED,function(e:AdEvent):void{
+					_facade.sendNotification("contentPauseRequested");
+					contentPauseRequestedHandler(e);
+				});
 				// When ad finishes or if ad is non-linear, content resume event will be
 				// fired. For example, if VMAP response only has post-roll, content
 				// resume will be fired for pre-roll ad (which is not present) to signal
 				// that content should be started or resumed.
-				adsManager.addEventListener(AdEvent.CONTENT_RESUME_REQUESTED,
-					contentResumeRequestedHandler);
+				adsManager.addEventListener(AdEvent.CONTENT_RESUME_REQUESTED,function(e:AdEvent):void{
+					_facade.sendNotification("contentResumeRequested");
+					contentResumeRequestedHandler(e);
+				});
+					
 				// All AD_ERRORs indicate fatal failures. You can discard the AdsManager and
 				// resume your content in this handler.
 				adsManager.addEventListener(AdErrorEvent.AD_ERROR,
@@ -374,7 +339,7 @@ package
 					//TODO: expose duration of ad as a public
 					//NOTE: not sure if this works because duration does not change, so this event is not triggered
 					//NOTE: so i did this in the remaining_time_changed function
-					//this.adDuration = e.target.duration;					
+					this.adDuration = e.target.duration;					
 				});
 				
 				// Dispatched when a user interacts with a VPAID 2.0 ad.
@@ -393,6 +358,7 @@ package
 					}
 					this.remainingTime		= e.target.remainingTime;
 					this.currentTime		= e.ad.currentTime;
+					_facade.sendNotification("adRemainingTimeChange", {time: e.ad.currentTime, duration: e.ad.duration, remain: e.target.remainingTime});
 				});
 				
 				adsManager.addEventListener(AdEvent.SKIPPED, function(e:AdEvent):void
@@ -449,16 +415,23 @@ package
 					super.height	= _facade["bindObject"]["video"]["height"];
 					
 				}
+				_facade.sendNotification("adLoadedEvent");
 				
-				adsManager.init(this.width, this.height, ViewModes.NORMAL);		
-				
-				addChild(adsManager.adsContainer);
-				
+				try{
+					adsManager.init(this.width, this.height, ViewModes.NORMAL);		
+				}catch(e:Error){
+					trace("Error on adsManager.init call");
+				}
+
+				var rootMediator:RootMediator = _facade.retrieveMediator(RootMediator.NAME) as RootMediator;
+				rootMediator.root.addChild(adsManager.adsContainer);						
+
 				// Start ad playback.
 				adsManager.start();
 			}
 		}
 		
+
 		
 		/**
 		 * If an error occurs during the ads load, the content can be resumed or
@@ -466,11 +439,12 @@ package
 		 * if there's an error loading ads.
 		 */
 		private function adsLoadErrorHandler(event:AdErrorEvent):void 
-		{
+		{			
 			log("adsLoadErrorHandler ERROR.CODE:		"+event.error.errorCode);
 			log("adsLoadErrorHandler ERROR.MESSAGE:	"+event.error.errorMessage);
 			log("adsLoadErrorHandler ERROR.AD_IDS:	"+event.error.adIds);
 			log("adsLoadErrorHandler ERROR.ERROR_TYPE:"+event.error.errorType);
+			_facade.sendNotification("adsLoadError");
 			contentResumeRequestedHandler();
 			_mediator.sendNotification(NotificationType.DO_PLAY);
 		}
@@ -481,18 +455,19 @@ package
 		 */
 		private function allAdsCompletedHandler(event:AdEvent):void 
 		{	log("allAdsCompletedHandler");
+			_facade.sendNotification("allAdsCompleted");
 			// This sends a notification that the ad has started
 			_facade.sendNotification("adEnd", {context:_adContext});
 			//TODO: check to see if isLinear then send DO PLAY
 			//reset cpAdTagURL
-			cpAdTagUrl	= "";
-			
+			cpAdTagUrl	= "";	
 			// Ads manager can be destroyed after all of its ads have played.
 			destroyAdsManager();
 		}
 		
 		private function adCompletedHandler(event:AdEvent):void{
 			log("AdEvent.adCompletedHandler");
+			_facade.sendNotification("adCompleted");
 			if (!disableCompanionAds && flashCompanion)
 				flashCompanion.destroy();
 		}
@@ -501,23 +476,32 @@ package
 		 * Clean up AdsManager references when no longer needed. Explicit cleanup
 		 * is necessary to prevent memory leaks.
 		 */
-		private function destroyAdsManager(arg0:String=null):void 
-		{log("destroyAdsManager"); 
-			if(!_adManagers)return;
+		public function destroyAdsManager(arg0:String=null):void 
+		{
+			
+			log("destroyAdsManager"); 
+			if (!_adManagers) 
+				return;
+			
 			for(var i:int=0;i<_adManagers.length;i++){
-				if (_adManagers[i].cuePoints.length == 0 && _adManagers[i].linear) 
+				if (_adManagers[i].cuePoints.length == 0) 
 				{
 					if (_adManagers[i].adsContainer.parent &&
 						_adManagers[i].adsContainer.parent.contains(adsManager.adsContainer)) 
 					{
-						_adManagers[i].adsContainer.parent.removeChild(adsManager.adsContainer);
-					}
-					_adManagers[i].destroy();
+						_adManagers[i].adsContainer.parent.removeChildAt(_adManagers[i].adsContainer);						
+						
+					}	
+					try{
+						_adManagers[i].destroy();
+					}catch(e:Error){}
 				}else if(arg0 == "all"){
-					_adManagers[i].destroy();
+					try{
+						_adManagers[i].destroy();
+					}catch(e:Error){}
 				}
-				
 			}
+			
 		}
 		
 		/**
@@ -540,12 +524,10 @@ package
 			
 			//disable controls if it's an adrule or video ad
 			if(ad.linear){
-				//if _background has a parent, that means it's on the stage.  if its not on there add child at 0 display index.  so it won't overlap ads. 
-				if(!_background.parent)this.addChildAt(_background,0);
 				
 				adInProgress	= true;
 				// Send adStart notification	
-				_facade.sendNotification("adStart", {context:_adContext});
+				_facade.sendNotification("adStart", {context:_adContext, duration:event.ad.duration});
 				
 				_mediator.stopPlayback();
 				_mediator.disableControls();
@@ -568,7 +550,6 @@ package
 				}
 			}
 		}
-		
 		/**
 		 * The AdsManager raises this event when it requests the publisher to pause
 		 * the content.
@@ -581,6 +562,7 @@ package
 			}
 			
 			log("contentPauseRequestedHandler	"+playerIsPlaying);
+			_facade.sendNotification("contentPauseRequested");
 			// The ad will cover a large portion of the content, therefore content
 			// must be paused.
 			if(!_contentComplete)
@@ -601,31 +583,23 @@ package
 		 */
 		private function contentResumeRequestedHandler(event:AdEvent	= null):void 
 		{	
+			adInProgress		= false;
 			
-			if(_background.parent)
-				_background.parent.removeChild(_background);
-			
-			
-			log("contentResumeRequestedHandler	isAdRulex:"+_isAdRule +"		:isLinear : ");
-			
+			log("contentResumeRequestedHandler	");
 			// Rewire controls to affect content instead of the ads manager.
 			//tell sequence proxy, hey this sequence item is done. do your thang. 
-			
-			//we tell it that we're done if the current ad was requested by the sequenceProxy
-			if(_sequenceProxy.vo.isInSequence)
-				_facade.sendNotification(NotificationType.SEQUENCE_ITEM_PLAY_END);
-			
-			//adRules are not managed by the sequenceProxy, so we force playback
-			if(!_mediator.playbackComplete)
-				_facade.sendNotification(NotificationType.DO_PLAY);
-			
-			//			if(event){
-			//				_facade.sendNotification(NotificationType.DO_PLAY);
-			//			}
-			
-			adInProgress		= false;
 			_mediator.enableControls();
-			
+			//we tell it that we're done if the current ad was requested by the sequenceProxy
+			if(_sequenceProxy.vo.isInSequence &&  (!event || !event.ad))
+				_facade.sendNotification(NotificationType.SEQUENCE_ITEM_PLAY_END);
+			else if (event && event.ad){
+				if(!event.ad.linear && _sequenceProxy.vo.isInSequence)
+					_facade.sendNotification(NotificationType.SEQUENCE_ITEM_PLAY_END);
+			}
+			else if (!_mediator.playbackComplete){
+				//this is called when there's an adRule and midrolls are complete
+				_facade.sendNotification(NotificationType.DO_PLAY);
+			}
 		}
 		
 		/**
@@ -679,7 +653,9 @@ package
 		
 		private function resizeManagers(w:Number,h:Number):void{
 			for(var i:int=0;i<_adManagers.length;i++){
-				_adManagers[i].resize(w, h, ViewModes.NORMAL);
+				try{
+					_adManagers[i].resize(w, h, ViewModes.NORMAL);
+				}catch(e:Error){}
 			}
 		}
 		
@@ -725,7 +701,7 @@ package
 		
 		public function get entryUrl () : String
 		{
-			return null;
+			return "";
 		}
 		
 		

@@ -94,7 +94,7 @@ package com.kaltura.kdpfl.model
 			//into the player
 			var mediaProxy : MediaProxy = facade.retrieveProxy(MediaProxy.NAME) as MediaProxy;
 			
-			if (vo.preCurrentIndex != -1)
+			if (vo.preCurrentIndex != -1 && vo.preCurrentIndex < vo.preSequenceArr.length)
 			{
 				if ( vo.preSequenceArr[vo.preCurrentIndex].hasMediaElement() )
 				{
@@ -102,7 +102,7 @@ package com.kaltura.kdpfl.model
 					return true;
 				}
 			}
-			else if (vo.postCurrentIndex != -1 )
+			else if (vo.postCurrentIndex != -1 && vo.postCurrentIndex < vo.postSequenceArr.length)
 			{
 				if (vo.postSequenceArr[vo.postCurrentIndex].hasMediaElement() )
 				{
@@ -200,7 +200,7 @@ package com.kaltura.kdpfl.model
 			}
 			else
 			{
-				if ( activeSequenceArr && activeSequenceArr.length )
+				if ( activeSequenceArr && activeSequenceArr.length && activeIndex < activeSequenceArr.length)
 				{
 					sendNotification(NotificationType.SEQUENCE_ITEM_PLAY_START, {sequenceContext : sequenceContext, currentIndex : activeIndex});
 					activeSequenceArr[activeIndex].start();
@@ -404,7 +404,7 @@ package com.kaltura.kdpfl.model
 		 */		
 		public function hasSubSequence () : Boolean
 		{
-			if (vo.preCurrentIndex != -1)
+			if (vo.preCurrentIndex != -1 && vo.preCurrentIndex < vo.preSequenceArr.length)
 			{
 				return vo.preSequenceArr[vo.preCurrentIndex].hasSubSequence();
 			}
