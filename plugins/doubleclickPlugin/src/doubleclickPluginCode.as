@@ -293,7 +293,7 @@ package
 			if (adsManager) 
 			{
 				adsManager.addEventListener(AdEvent.LOADED,function(e:AdEvent):void{
-					_facade.sendNotification("adLoaded", {isLinear: e.ad.linear});
+					_facade.sendNotification("adLoaded", {isLinear: e.ad.linear, adID: e.ad.id, adSystem: e.ad.adSystem, adPosition: e.ad.adPodInfo.adPosition});
 				});
 				// Add required ads manager listeners.
 				// ALL_ADS_COMPLETED event will fire once all the ads have played. There
@@ -467,7 +467,7 @@ package
 		
 		private function adCompletedHandler(event:AdEvent):void{
 			log("AdEvent.adCompletedHandler");
-			_facade.sendNotification("adCompleted");
+			_facade.sendNotification("adCompleted", {adID: event.ad.id});
 			if (!disableCompanionAds && flashCompanion)
 				flashCompanion.destroy();
 		}
@@ -527,7 +527,7 @@ package
 				
 				adInProgress	= true;
 				// Send adStart notification	
-				_facade.sendNotification("adStart", {context:_adContext, duration:event.ad.duration});
+				_facade.sendNotification("adStart", {context:_adContext, duration:event.ad.duration, adID: event.ad.id});
 				
 				_mediator.stopPlayback();
 				_mediator.disableControls();
