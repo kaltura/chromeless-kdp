@@ -193,6 +193,12 @@ package
 			
 		}
 		
+		public function changeVolume( val: Number):void {
+			if ( adsManager ) {
+				adsManager.volume = val;
+			}
+		}
+		
 		/**
 		 * determines which adTagUrl to use
 		 * **/
@@ -426,6 +432,7 @@ package
 				var rootMediator:RootMediator = _facade.retrieveMediator(RootMediator.NAME) as RootMediator;
 				rootMediator.root.addChild(adsManager.adsContainer);						
 
+				adsManager.volume =  _playerMediator.player.volume;
 				// Start ad playback.
 				adsManager.start();
 			}
@@ -489,7 +496,7 @@ package
 					if (_adManagers[i].adsContainer.parent &&
 						_adManagers[i].adsContainer.parent.contains(adsManager.adsContainer)) 
 					{
-						_adManagers[i].adsContainer.parent.removeChildAt(_adManagers[i].adsContainer);						
+						_adManagers[i].adsContainer.parent.removeChild(_adManagers[i].adsContainer);						
 						
 					}	
 					try{

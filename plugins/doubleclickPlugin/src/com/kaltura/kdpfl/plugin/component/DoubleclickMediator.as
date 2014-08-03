@@ -61,11 +61,6 @@ package com.kaltura.kdpfl.plugin.component
 		private var _entryUrl:String = "";
 		
 		/**
-		 * current player volume
-		 */		
-		private var _currentVolume:Number = 100;
-		
-		/**
 		 * since the new enableGui mechanism in KDP counts calls to 
 		 * enable/disable gui, use this to not call too many of any of them. 
 		 */
@@ -117,7 +112,7 @@ package com.kaltura.kdpfl.plugin.component
 				NotificationType.ENABLE_GUI,
 				NotificationType.PLAYBACK_COMPLETE,
 				NotificationType.CHANGE_MEDIA_PROCESS_STARTED,
-				NotificationType.VOLUME_CHANGED,
+				NotificationType.CHANGE_VOLUME,
 				NotificationType.DO_PLAY,
 				NotificationType.PLAYER_UPDATE_PLAYHEAD,
 				NotificationType.OPEN_FULL_SCREEN,
@@ -170,8 +165,8 @@ package com.kaltura.kdpfl.plugin.component
 					//					if(!_plugin.adTagUrl)
 					onAdOpportunity(notification.getBody());
 					break;				
-				case NotificationType.VOLUME_CHANGED:
-					_plugin.adsManager.volume = data.newVolume as Number;
+				case NotificationType.CHANGE_VOLUME:
+					_plugin.changeVolume(data as Number);
 					break;
 				case NotificationType.CHANGE_MEDIA:
 					eventDispatcher.dispatchEvent(new Event(NotificationType.CHANGE_MEDIA));
@@ -303,18 +298,7 @@ package com.kaltura.kdpfl.plugin.component
 			}
 			
 		}
-		/**
-		 * Update the doubleclick component on volume changes.
-		 * @param volume the new volume (0 to 1 scale)
-		 **/
-		public function setVolume(volume:Number):void {
-			_currentVolume = volume;
-		}
-		
-		public function getVolume():Number{
-			return _currentVolume;
-		}
-		
+	
 		/**
 		 * show postroll ads
 		 */
