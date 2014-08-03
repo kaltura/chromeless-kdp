@@ -106,7 +106,6 @@ package com.kaltura.kdpfl.plugin.component
 			var notes:Array =  [preSequenceNotificationStartName,
 				postSequenceNotificationStartName,
 				NotificationType.PLAYER_PLAYED,
-				NotificationType.ROOT_RESIZE,
 				NotificationType.CHANGE_MEDIA,
 				NotificationType.MEDIA_READY,
 				NotificationType.ENABLE_GUI,
@@ -115,10 +114,6 @@ package com.kaltura.kdpfl.plugin.component
 				NotificationType.CHANGE_VOLUME,
 				NotificationType.DO_PLAY,
 				NotificationType.PLAYER_UPDATE_PLAYHEAD,
-				NotificationType.OPEN_FULL_SCREEN,
-				NotificationType.CLOSE_FULL_SCREEN,
-				NotificationType.HAS_CLOSED_FULL_SCREEN,
-				NotificationType.HAS_OPENED_FULL_SCREEN,
 				NotificationType.ROOT_RESIZE,
 				"adStarted",
 				"requestAds",
@@ -138,11 +133,8 @@ package com.kaltura.kdpfl.plugin.component
 			
 			switch(notification.getName())
 			{
-				case NotificationType.HAS_OPENED_FULL_SCREEN:
-					eventDispatcher.dispatchEvent(new Event(NotificationType.ROOT_RESIZE));
-					break;
-				case NotificationType.HAS_CLOSED_FULL_SCREEN:
-					eventDispatcher.dispatchEvent(new Event(NotificationType.ROOT_RESIZE));
+				case NotificationType.ROOT_RESIZE:
+					_plugin.onResize( data );
 					break;
 				case NotificationType.PLAYER_UPDATE_PLAYHEAD:
 					//correct the 1 sec delay on ads during adrule playback

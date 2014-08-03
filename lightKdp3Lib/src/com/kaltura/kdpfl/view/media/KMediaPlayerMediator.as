@@ -13,7 +13,6 @@ package com.kaltura.kdpfl.view.media
 	import com.kaltura.kdpfl.view.controls.KTrace;
 	
 	import flash.display.DisplayObject;
-	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;

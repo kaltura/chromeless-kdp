@@ -199,6 +199,12 @@ package
 			}
 		}
 		
+		public function onResize( size:Object ):void {
+			if ( _adManagers ) {
+				resizeManagers( size.width, size.height );				
+			}
+		}
+		
 		/**
 		 * determines which adTagUrl to use
 		 * **/
@@ -430,7 +436,7 @@ package
 				}
 
 				var rootMediator:RootMediator = _facade.retrieveMediator(RootMediator.NAME) as RootMediator;
-				rootMediator.root.addChild(adsManager.adsContainer);						
+				rootMediator.root.addChild(adsManager.adsContainer);
 
 				adsManager.volume =  _playerMediator.player.volume;
 				// Start ad playback.
@@ -628,7 +634,7 @@ package
 		private function midpointHandler(event:AdEvent):void
 		{
 			log("midpointHandler");
-			adsManager.resize(this.width, this.height, ViewModes.NORMAL)
+		//	adsManager.resize(this.width, this.height, ViewModes.NORMAL)
 			_facade.sendNotification("midpoint");
 		}
 		
