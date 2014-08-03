@@ -834,12 +834,6 @@ package com.kaltura.kdpfl.view.media
 					}
 					
 					_mediaProxy.loadComplete();
-					if(_isAfterSeek && !_isPrePlaySeekInProgress)
-					{
-						_isAfterSeek = false;
-						sendNotification(NotificationType.PLAYER_SEEK_END);
-						
-					}
 
 					break;
 				case MediaPlayerState.PAUSED:
