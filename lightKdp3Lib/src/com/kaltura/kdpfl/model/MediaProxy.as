@@ -86,7 +86,15 @@ package com.kaltura.kdpfl.model
 		 */		
 		public function prepareMediaElement(seekFrom :uint = 0) : void
 		{
+			var entryUrl:String = vo.entryUrl;
 			var resource:MediaResourceBase;
+			//support intelli-seek if playmanifest url
+			if ( seekFrom != 0 && vo.entryUrl.indexOf("playManifest")!=-1 ) {
+				var index:int = vo.entryUrl.lastIndexOf('/a/a.');
+				if ( index > 0 ) {
+					entryUrl = vo.entryUrl.substring(0, index) + '/seekFrom/' + seekFrom * 1000 + vo.entryUrl.substring(index) ;
+				}				
+			}
 			
 			switch (vo.deliveryType)
 			{
@@ -95,13 +103,13 @@ package com.kaltura.kdpfl.model
 					//Create resource for live streaming entry
 				//	var liveStreamUrl : String = vo.entryUrl;
 				//	resource = new StreamingURLResource(liveStreamUrl, StreamType.LIVE);
-					createElement(vo.entryUrl, StreamType.LIVE);
+					createElement(entryUrl, StreamType.LIVE);
 					
 					break;
 				
 				case StreamerType.RTMP:	
 					var streamFormat : String = _flashvars.streamFormat ? (_flashvars.streamFormat + ":") : "";
-					var rtmpUrl:String = vo.entryUrl;
+					var rtmpUrl:String = entryUrl;
 					if (!URLUtils.getProtocol(rtmpUrl)) // if we didn't get a full url, we build it
 					{
 						rtmpUrl = _flashvars.streamerUrl + "/" + streamFormat + rtmpUrl;
@@ -117,10 +125,10 @@ package com.kaltura.kdpfl.model
 					{
 						var urlLoader:URLLoader = new URLLoader();
 						urlLoader.addEventListener(Event.COMPLETE, onUrlComplete);
-						urlLoader.load(new URLRequest(vo.entryUrl));
+						urlLoader.load(new URLRequest(entryUrl));
 					}
 					else
-						createElement(vo.entryUrl); 
+						createElement(entryUrl); 
 					break;
 			}
 		}

@@ -87,10 +87,7 @@ package com.kaltura.kdpfl.view.media
 		 * the previous player volume 
 		 */		
 		private var _prevVolume:Number = 1;
-		/**
-		 * in intelli seek - if we should pause after player goes to "playing state" 
-		 */
-		private var _pausedPending:Boolean = false;
+	
 		/**
 		 * This flag fix OSMF issue that on playend you get somtimes MediaPlayerReady
 		 * so to fix this I added this flag 
@@ -497,7 +494,6 @@ package com.kaltura.kdpfl.view.media
 							_offset = seekTo;
 							_isPrePlaySeek = true;
 							_isPrePlaySeekInProgress = true;
-							_pausedPending = true;
 							sendNotification(NotificationType.DO_PLAY);
 						}
 						return;
@@ -522,29 +518,18 @@ package com.kaltura.kdpfl.view.media
 						
 					}
 					else {
-						//currently intelli seek doesn't work. ignore seek.
-						sendNotification(NotificationType.PLAYER_SEEK_END);
 						//do intlliseek 
 						
 						//cannot intelliseek in this case
-					/*	if(!_mediaProxy.vo.keyframeValuesArray && !isMP4Stream()) return;
-						
-						
-						//on a new seek we can reset the load media on play flag
-						_loadMediaOnPlay = false;
-						//if we should pause immediately after we get into "playing" state
-						if (_prevState == PAUSED)
-						{
-							_pausedPending = true;
+						if(!_mediaProxy.vo.keyframeValuesArray && !isMP4Stream()) {
+							sendNotification(NotificationType.PLAYER_SEEK_END);
+						} else {
+							//on a new seek we can reset the load media on play flag
+							_loadMediaOnPlay = false;
+							doIntelliSeek(seekTo);
 						}
-						else
-						{
-							_pausedPending = false;
-						}
-						doIntelliSeek(seekTo);*/
-					}
-
-					
+		
+					}					
 					break;
 				
 				case NotificationType.CHANGE_VOLUME:  //when the player asked to set new volume point
@@ -580,7 +565,6 @@ package com.kaltura.kdpfl.view.media
 						//for rtmp the seek will be performed after player is in "playing" state
 						if (_mediaProxy.vo.deliveryType == StreamerType.HTTP && (_mediaProxy.vo.keyframeValuesArray || isMP4Stream()))
 						{
-							_pausedPending = true;
 							doIntelliSeek(_offset);
 						}		
 						_isPrePlaySeek = false;
@@ -677,9 +661,10 @@ package com.kaltura.kdpfl.view.media
 			sendNotification(NotificationType.PLAYER_SEEK_START);
 			_isAfterSeek = true;
 			_isIntelliSeeking = true;
+			_waitForMediaElement = true;
 			_offset = value;
 			_mediaProxy.prepareMediaElement( _offset );
-			_mediaProxy.loadWithMediaReady();
+			//_mediaProxy.loadWithMediaReady();
 			 sendNotification( NotificationType.INTELLI_SEEK,{intelliseekTo: _offset} );
 		}
 		
@@ -742,11 +727,12 @@ package com.kaltura.kdpfl.view.media
 			else //not playable
 			{
 				_changeMediaOccur = false;
-				player.addEventListener(MediaPlayerCapabilityChangeEvent.CAN_PLAY_CHANGE,function(event:Event):void
+				player.addEventListener(MediaPlayerCapabilityChangeEvent.CAN_PLAY_CHANGE,function(event:MediaPlayerCapabilityChangeEvent):void
 				{
-					if (!_changeMediaOccur)
+					if (!_changeMediaOccur && event.enabled)
 					{
 						sendNotification(NotificationType.DO_PLAY);
+						_changeMediaOccur = true;
 					}
 				});
 			}	
@@ -918,13 +904,6 @@ package com.kaltura.kdpfl.view.media
 					
 					KTrace.getInstance().log("current index:",player.currentDynamicStreamIndex);
 					sendNotification( NotificationType.PLAYER_PLAYED );
-					
-					if (_pausedPending)
-					{
-						sendNotification(NotificationType.DO_PAUSE);
-						_pausedPending = false;
-						_prevState = "";
-					}
 					
 					//the movie started, pre play seek has now ended (unless we are still waiting for videoMetadataRecieved)
 					if (_isPrePlaySeekInProgress && !_isPrePlaySeek)
@@ -1352,7 +1331,7 @@ package com.kaltura.kdpfl.view.media
 		 * 
 		 */		
 		private function isMP4Stream():Boolean {
-			return ( _flashvars.hasOwnProperty("isMp4") && _flashvars.isMp4 == "true" );
+			return ( _mediaProxy.vo.isMp4 );
 			/*if (_mediaProxy.vo.kalturaMediaFlavorArray)
 			{
 				if (_mediaProxy.vo.selectedFlavorId)

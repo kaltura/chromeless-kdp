@@ -94,6 +94,9 @@ package com.kaltura.kdpfl.controller
 			if (flashvars.isLive && flashvars.isLive == "true")
 				mediaProxy.vo.isLive = true;
 			
+			if (flashvars.isMp4 && flashvars.isMp4 == "true")
+				mediaProxy.vo.isMp4 = true;
+			
 			MessageStrings.init(flashvars);
 			
 		}

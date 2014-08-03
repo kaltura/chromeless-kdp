@@ -30,6 +30,12 @@ package com.kaltura.kdpfl.model.vo
 		
 		[Bindable] 
 		/**
+		 * If the current flavor is mp4
+		 */	
+		public var isMp4:Boolean = false;	
+		
+		[Bindable] 
+		/**
 		 * entry already loaded entryLoadedBeforeChangeMedia by kdp first multirequest 
 		 */
 		public var entryLoadedBeforeChangeMedia:Boolean = false;
