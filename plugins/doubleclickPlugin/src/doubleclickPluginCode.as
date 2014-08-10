@@ -541,10 +541,11 @@ package
 			//disable controls if it's an adrule or video ad
 			var companions:Array = htmlCompanions.split(";");
 			for (var i:int=0; i < companions.length; i++){
-				if (companions[i].split(":").length == 3){
-					var companionID:String = companions[i].split(":")[0];
-					var adSlotWidth:int = parseInt(companions[i].split(":")[1]);
-					var adSlotHeight:int = parseInt(companions[i].split(":")[2]);
+				var companionsArr:Array = companions[i].split(":");
+				if (companionsArr.length == 3){
+					var companionID:String = companionsArr[0];
+					var adSlotWidth:int = parseInt(companionsArr[1]);
+					var adSlotHeight:int = parseInt(companionsArr[2]);
 					var companionAds:Array = ad.getCompanionAds(CompanionAdEnvironments.HTML, adSlotWidth, adSlotHeight);
 					// match companions to targets
 					if (companionAds.length > 0){
