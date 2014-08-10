@@ -76,6 +76,9 @@ package
 		//if companion ads should be disabled
 		public var disableCompanionAds:Boolean = true;
 		
+		// html companions
+		public var htmlCompanions:String;
+		
 		//placeholder for flash companion ad
 		public var companionContainerId:String;
 		
@@ -536,6 +539,22 @@ package
 			var ad:Ad = event.ad;
 			
 			//disable controls if it's an adrule or video ad
+			var companions:Array = htmlCompanions.split(";");
+			for (var i:int=0; i < companions.length; i++){
+				var companionsArr:Array = companions[i].split(":");
+				if (companionsArr.length == 3){
+					var companionID:String = companionsArr[0];
+					var adSlotWidth:int = parseInt(companionsArr[1]);
+					var adSlotHeight:int = parseInt(companionsArr[2]);
+					var companionAds:Array = ad.getCompanionAds(CompanionAdEnvironments.HTML, adSlotWidth, adSlotHeight);
+					// match companions to targets
+					if (companionAds.length > 0){
+						var companionAd:HtmlCompanionAd = companionAds[0];
+						_facade.sendNotification("displayCompanion", {companionID:companionID, content: companionAd.content});					
+					}
+				}
+			}
+
 			if(ad.linear){
 				
 				adInProgress	= true;
