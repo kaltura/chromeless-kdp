@@ -385,6 +385,7 @@ package com.kaltura.kdpfl.view.media
 						_mediaProxy.vo.media.addEventListener(MediaElementEvent.TRAIT_ADD, onMediaTraitAdd);
 						
 					}
+					_mediaProxy.vo.media.addEventListener(MediaElementEvent.TRAIT_ADD, onDynamicStreamTraitAdd);
 					
 					break;
 				
@@ -648,6 +649,33 @@ package com.kaltura.kdpfl.view.media
 				var dvrTrait:DVRTrait = _mediaProxy.vo.media.getTrait(MediaTraitType.DVR) as DVRTrait;
 				dvrWinSize = dvrTrait.windowDuration;
 				_mediaProxy.vo.media.removeEventListener(MediaElementEvent.TRAIT_ADD, onMediaTraitAdd);
+			}
+			
+		}
+
+		private function onDynamicStreamTraitAdd(e: MediaElementEvent) :  void
+		{
+			if (e.traitType==MediaTraitType.DYNAMIC_STREAM)
+			{
+				var dynamicTrait:DynamicStreamTrait = _mediaProxy.vo.media.getTrait(MediaTraitType.DYNAMIC_STREAM) as DynamicStreamTrait;
+				
+				if (dynamicTrait.numDynamicStreams) 
+				{
+					var flvArray:Array = new Array();
+					for (var i:int = 0; i<dynamicTrait.numDynamicStreams; i++)
+					{
+						var flavor:Object = {};
+						flavor.type = "video/mp4";
+						flavor.assetid = i;
+						flavor.bandwidth = dynamicTrait.getBitrateForIndex(i) * 1024; 
+						flavor.height = 0;
+						flvArray.push(flavor);
+					}
+				
+					sendNotification(NotificationType.FLAVORS_LIST_CHANGED, {flavors: flvArray});
+					sendNotification( NotificationType.SWITCHING_CHANGE_COMPLETE, {newIndex : dynamicTrait.currentIndex , newBitrate: dynamicTrait.getBitrateForIndex( dynamicTrait.currentIndex )}  );	
+					_mediaProxy.vo.media.removeEventListener(MediaElementEvent.TRAIT_ADD, onDynamicStreamTraitAdd);
+				}
 			}
 			
 		}
