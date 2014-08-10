@@ -541,14 +541,16 @@ package
 			//disable controls if it's an adrule or video ad
 			var companions:Array = htmlCompanions.split(";");
 			for (var i:int=0; i < companions.length; i++){
-				var companionID:String = companions[i].split(":")[0];
-				var adSlotWidth:int = parseInt(companions[i].split(":")[1]);
-				var adSlotHeight:int = parseInt(companions[i].split(":")[2]);
-				var companionAds:Array = ad.getCompanionAds(CompanionAdEnvironments.HTML, adSlotWidth, adSlotHeight);
-				// match companions to targets
-				if (companionAds.length > 0){
-					var companionAd:HtmlCompanionAd = companionAds[0];
-					_facade.sendNotification("displayCompanion", {companionID:companionID, content: companionAd.content});					
+				if (companions[i].split(":").length == 3){
+					var companionID:String = companions[i].split(":")[0];
+					var adSlotWidth:int = parseInt(companions[i].split(":")[1]);
+					var adSlotHeight:int = parseInt(companions[i].split(":")[2]);
+					var companionAds:Array = ad.getCompanionAds(CompanionAdEnvironments.HTML, adSlotWidth, adSlotHeight);
+					// match companions to targets
+					if (companionAds.length > 0){
+						var companionAd:HtmlCompanionAd = companionAds[0];
+						_facade.sendNotification("displayCompanion", {companionID:companionID, content: companionAd.content});					
+					}
 				}
 			}
 
