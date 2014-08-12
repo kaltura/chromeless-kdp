@@ -520,7 +520,7 @@ package com.kaltura.kdpfl.view.media
 						//do intlliseek 
 						
 						//cannot intelliseek in this case
-						if(!_mediaProxy.vo.keyframeValuesArray && !isMP4Stream()) {
+						if((!_mediaProxy.vo.keyframeValuesArray && !isMP4Stream()) || !_hasPlayed) {
 							sendNotification(NotificationType.PLAYER_SEEK_END);
 						} else {
 							//on a new seek we can reset the load media on play flag
