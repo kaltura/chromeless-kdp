@@ -378,12 +378,11 @@ package
 				
 				adsManager.addEventListener(AdEvent.SKIPPED, function(e:AdEvent):void
 				{
-					log("AdEvent.SKIPPED");
-					
+					log("AdEvent.SKIPPED");					
 					_facade.sendNotification("adSkipped");
-					
-					destroyAdsManager();
-					contentResumeRequestedHandler();
+					_facade.sendNotification("contentResumeRequested");
+					contentResumeRequestedHandler(e);
+					allAdsCompletedHandler(e);
 				});
 				
 				adsManager.addEventListener(AdEvent.USER_CLOSED, function(e:AdEvent):void{
@@ -539,22 +538,24 @@ package
 			var ad:Ad = event.ad;
 			
 			//disable controls if it's an adrule or video ad
-			var companions:Array = htmlCompanions.split(";");
-			for (var i:int=0; i < companions.length; i++){
-				var companionsArr:Array = companions[i].split(":");
-				if (companionsArr.length == 3){
-					var companionID:String = companionsArr[0];
-					var adSlotWidth:int = parseInt(companionsArr[1]);
-					var adSlotHeight:int = parseInt(companionsArr[2]);
-					var companionAds:Array = ad.getCompanionAds(CompanionAdEnvironments.HTML, adSlotWidth, adSlotHeight);
-					// match companions to targets
-					if (companionAds.length > 0){
-						var companionAd:HtmlCompanionAd = companionAds[0];
-						_facade.sendNotification("displayCompanion", {companionID:companionID, content: companionAd.content});					
+			if ( htmlCompanions ) {
+				var companions:Array = htmlCompanions.split(";");
+				for (var i:int=0; i < companions.length; i++){
+					var companionsArr:Array = companions[i].split(":");
+					if (companionsArr.length == 3){
+						var companionID:String = companionsArr[0];
+						var adSlotWidth:int = parseInt(companionsArr[1]);
+						var adSlotHeight:int = parseInt(companionsArr[2]);
+						var companionAds:Array = ad.getCompanionAds(CompanionAdEnvironments.HTML, adSlotWidth, adSlotHeight);
+						// match companions to targets
+						if (companionAds.length > 0){
+							var companionAd:HtmlCompanionAd = companionAds[0];
+							_facade.sendNotification("displayCompanion", {companionID:companionID, content: companionAd.content});					
+						}
 					}
 				}
 			}
-
+			
 			if(ad.linear){
 				
 				adInProgress	= true;
