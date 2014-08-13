@@ -630,6 +630,7 @@ package
 					_facade.sendNotification(NotificationType.SEQUENCE_ITEM_PLAY_END);
 			}
 			else if (!_mediator.playbackComplete){
+				_facade.sendNotification(NotificationType.SEQUENCE_ITEM_PLAY_END);
 				//this is called when there's an adRule and midrolls are complete
 				_facade.sendNotification(NotificationType.DO_PLAY);
 			}

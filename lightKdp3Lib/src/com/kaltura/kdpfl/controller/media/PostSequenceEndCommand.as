@@ -22,24 +22,6 @@ package com.kaltura.kdpfl.controller.media
 			sequenceProxy.vo.isInSequence = false;
 			sequenceProxy.vo.postCurrentIndex = -1;
 			sequenceProxy.vo.postSequenceComplete = true;
-			var mediaProxy : MediaProxy = facade.retrieveProxy(MediaProxy.NAME) as MediaProxy;
-			//sequenceProxy.vo.replacedMedia = true;
-			//mediaProxy.loadWithoutMediaReady();
-			if(mediaProxy.vo.isLive)
-			{
-				mediaProxy.vo.singleAutoPlay = true;
-				sendNotification(NotificationType.CHANGE_MEDIA, {entryUrl:mediaProxy.vo.entryUrl});
-			}
-			else
-			{
-				sendNotification( NotificationType.PLAYER_PLAY_END );
-				var flashvars:Object = (facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy).vo.flashvars;
-				//if we want to display ads on replay, reset prerolls and postrolls
-				if (flashvars.adsOnReplay && flashvars.adsOnReplay=="true")
-				{
-					sequenceProxy.resetPrePostSequence()
-				}
-			}
 		}
 	}
 }

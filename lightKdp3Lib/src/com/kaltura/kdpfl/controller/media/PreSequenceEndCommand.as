@@ -21,17 +21,6 @@ package com.kaltura.kdpfl.controller.media
 			sequenceProxy.vo.isInSequence = false;
 			sequenceProxy.vo.preCurrentIndex = -1;
 			sequenceProxy.vo.preSequenceComplete = true;
-			var flashvars:Object = (facade.retrieveProxy( ConfigProxy.NAME ) as ConfigProxy).vo.flashvars;
-			if (!flashvars.pauseAfterPreSequence || flashvars.pauseAfterPreSequence=="false")
-			{
-				sendNotification(NotificationType.DO_PLAY);				
-			}
-			else
-			{
-				sendNotification(NotificationType.DO_PAUSE);	
-				var mediaMediator:KMediaPlayerMediator = facade.retrieveMediator(KMediaPlayerMediator.NAME) as KMediaPlayerMediator;
-				mediaMediator.cleanMedia();
-			}
 			
 		}
 	}

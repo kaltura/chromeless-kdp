@@ -26,6 +26,9 @@ package com.kaltura.kdpfl
 	import org.puremvc.as3.interfaces.IMediator;
 	import org.puremvc.as3.interfaces.IProxy;
 	import org.puremvc.as3.patterns.facade.Facade;
+	import com.kaltura.kdpfl.controller.media.PreSequenceEndCommand;
+	import com.kaltura.kdpfl.controller.MidSequenceEndCommand;
+	import com.kaltura.kdpfl.controller.media.PostSequenceEndCommand;
 
 	public class ApplicationFacade extends Facade implements IFacade
 	{
@@ -191,6 +194,9 @@ package com.kaltura.kdpfl
 			registerCommand(NotificationType.SEQUENCE_ITEM_PLAY_END, SequenceItemPlayEndCommand);
 			
 			registerCommand(NotificationType.SEQUENCE_SKIP_NEXT, SequenceSkipNextCommand);
+			registerCommand(NotificationType.PRE_SEQUENCE_COMPLETE, PreSequenceEndCommand);
+			registerCommand(NotificationType.MID_SEQUENCE_COMPLETE, MidSequenceEndCommand);
+			registerCommand(NotificationType.POST_SEQUENCE_COMPLETE, PostSequenceEndCommand);
 		}
 		
 		override protected function initializeView():void
