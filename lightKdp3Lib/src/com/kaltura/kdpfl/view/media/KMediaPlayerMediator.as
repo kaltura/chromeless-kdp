@@ -21,6 +21,7 @@ package com.kaltura.kdpfl.view.media
 	import mx.utils.Base64Encoder;
 	
 	import org.osmf.elements.ProxyElement;
+	import org.osmf.events.AlternativeAudioEvent;
 	import org.osmf.events.AudioEvent;
 	import org.osmf.events.BufferEvent;
 	import org.osmf.events.DisplayObjectEvent;
@@ -219,6 +220,8 @@ package com.kaltura.kdpfl.view.media
 			player.addEventListener( TimeEvent.DURATION_CHANGE , onDurationChange );
 			player.addEventListener( DynamicStreamEvent.SWITCHING_CHANGE , onSwitchingChange );
 			player.addEventListener( SeekEvent.SEEKING_CHANGE , onSeekingChange );
+			player.addEventListener(AlternativeAudioEvent.NUM_ALTERNATIVE_AUDIO_STREAMS_CHANGE, onNumAlternativeAudioStreamsChange); 
+			player.addEventListener(AlternativeAudioEvent.AUDIO_SWITCHING_CHANGE, onAlternateAudioSwitchingChange); 
 			
 			if(!_flashvars.disableOnScreenClick || _flashvars.disableOnScreenClick!="true")
 			{
@@ -227,6 +230,30 @@ package com.kaltura.kdpfl.view.media
 			} 
 
 		}	
+		
+		// Listen for a change in the number of alternative streams associated with this video. 
+		private function onNumAlternativeAudioStreamsChange(event:AlternativeAudioEvent):void 
+		{ 
+			if (player.hasAlternativeAudio) 
+			{ 
+				trace("Number of alternative audio streams = ", player.numAlternativeAudioStreams); 
+				var langs:Array = new Array();
+				for ( var i:int = 0; i< player.numAlternativeAudioStreams; i++ ) {
+					langs.push({ label: player.getAlternativeAudioItemAt(i).streamName, index: i } );
+				}
+					
+				sendNotification( NotificationType.AUDIO_TRACKS_RECEIVED, { languages: langs} );
+			} 
+		} 
+		
+		// Listen for when an audio stream switch is in progress or has been completed. 
+		private function onAlternateAudioSwitchingChange(event:AlternativeAudioEvent):void 
+		{ 
+			if ( !event.switching) {
+				sendNotification( NotificationType.AUDIO_TRACK_SELECTED, {index : player.currentAlternativeAudioStreamIndex } );  
+			} 			 
+		} 
+		
 		
 		/**
 		 * Enables play/pause on clicking the video.
@@ -288,7 +315,8 @@ package com.kaltura.kdpfl.view.media
 				NotificationType.PLAYER_PLAY_END,
 				NotificationType.MEDIA_ELEMENT_READY,
 				NotificationType.GO_LIVE,
-				NotificationType.MEDIA_LOADED
+				NotificationType.MEDIA_LOADED,
+				NotificationType.DO_AUDIO_SWITCH
 			];
 		}
 		
@@ -357,6 +385,7 @@ package com.kaltura.kdpfl.view.media
 						_mediaProxy.vo.media.addEventListener(MediaElementEvent.TRAIT_ADD, onMediaTraitAdd);
 						
 					}
+					_mediaProxy.vo.media.addEventListener(MediaElementEvent.TRAIT_ADD, onDynamicStreamTraitAdd);
 					
 					break;
 				
@@ -598,6 +627,13 @@ package com.kaltura.kdpfl.view.media
 						media["client"].addHandler( "onTextData", onEmbeddedCaptions );
 					}
 					break;
+				
+				case NotificationType.DO_AUDIO_SWITCH:
+					if (player.hasAlternativeAudio) 
+					{    
+						player.switchAlternativeAudioIndex(note.getBody().audioIndex); 
+					}     
+					break;
 			}
 		}
 		
@@ -613,6 +649,33 @@ package com.kaltura.kdpfl.view.media
 				var dvrTrait:DVRTrait = _mediaProxy.vo.media.getTrait(MediaTraitType.DVR) as DVRTrait;
 				dvrWinSize = dvrTrait.windowDuration;
 				_mediaProxy.vo.media.removeEventListener(MediaElementEvent.TRAIT_ADD, onMediaTraitAdd);
+			}
+			
+		}
+
+		private function onDynamicStreamTraitAdd(e: MediaElementEvent) :  void
+		{
+			if (e.traitType==MediaTraitType.DYNAMIC_STREAM)
+			{
+				var dynamicTrait:DynamicStreamTrait = _mediaProxy.vo.media.getTrait(MediaTraitType.DYNAMIC_STREAM) as DynamicStreamTrait;
+				
+				if (dynamicTrait.numDynamicStreams) 
+				{
+					var flvArray:Array = new Array();
+					for (var i:int = 0; i<dynamicTrait.numDynamicStreams; i++)
+					{
+						var flavor:Object = {};
+						flavor.type = "video/mp4";
+						flavor.assetid = i;
+						flavor.bandwidth = dynamicTrait.getBitrateForIndex(i) * 1024; 
+						flavor.height = 0;
+						flvArray.push(flavor);
+					}
+				
+					sendNotification(NotificationType.FLAVORS_LIST_CHANGED, {flavors: flvArray});
+					sendNotification( NotificationType.SWITCHING_CHANGE_COMPLETE, {newIndex : dynamicTrait.currentIndex , newBitrate: dynamicTrait.getBitrateForIndex( dynamicTrait.currentIndex )}  );	
+					_mediaProxy.vo.media.removeEventListener(MediaElementEvent.TRAIT_ADD, onDynamicStreamTraitAdd);
+				}
 			}
 			
 		}

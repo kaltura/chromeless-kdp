@@ -474,6 +474,24 @@ package com.kaltura.kdpfl.model.type
 		  * Body - flavors: Array containing the new flavors list 
 		  */		 
 		 static public const FLAVORS_LIST_CHANGED:String = "flavorsListChanged";
+
+		 /**
+		 * Will indicate stream has multi audio tracks
+		 * Body - languages: Array containing the audios list
+		 * */
+		 static public const AUDIO_TRACKS_RECEIVED:String = "audioTracksReceived";
+
+		 /**
+		 * Will indicate a new audio track was selected
+		 * Body - index: index of new track
+		 * */
+		 static public const AUDIO_TRACK_SELECTED:String = "audioTrackSelected";
+
+		 /**
+		 * Will switch the current audio track
+		 * Body - audioIndex: index for new track
+		 * */ 
+		 static public const DO_AUDIO_SWITCH:String = "doAudioSwitch";
 		 
 
 	}
