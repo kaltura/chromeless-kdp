@@ -922,6 +922,7 @@ package com.kaltura.kdpfl.view.media
 					if(_isAfterSeek)
 					{
 						_isAfterSeek = false;
+						sendNotification( NotificationType.PLAYER_UPDATE_PLAYHEAD , getCurrentTime() );
 						sendNotification(NotificationType.PLAYER_SEEK_END);
 						
 					}
@@ -1268,7 +1269,7 @@ package com.kaltura.kdpfl.view.media
 			if ( event.seeking ) {
 				sendNotification(NotificationType.PLAYER_SEEK_START);
 			} else {
-				sendNotification( NotificationType.PLAYER_UPDATE_PLAYHEAD , player.currentTime );
+				sendNotification( NotificationType.PLAYER_UPDATE_PLAYHEAD , getCurrentTime() );
 				sendNotification(NotificationType.PLAYER_SEEK_END);
 			}
 		}
