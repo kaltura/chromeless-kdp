@@ -14,6 +14,7 @@ package
 	import com.google.ads.ima.api.ViewModes;
 	import com.kaltura.kdpfl.model.MediaProxy;
 	import com.kaltura.kdpfl.model.SequenceProxy;
+	import com.kaltura.kdpfl.model.ConfigProxy;
 	import com.kaltura.kdpfl.model.type.NotificationType;
 	import com.kaltura.kdpfl.model.type.SequenceContextType;
 	import com.kaltura.kdpfl.plugin.IPlugin;
@@ -94,6 +95,7 @@ package
 		private var _mediaUrl:String;
 		private var _adContext:String;
 		private var _sequenceProxy:SequenceProxy;
+		private var _configProxy: ConfigProxy;
 		private var _playerMediator:KMediaPlayerMediator;
 		private var _mediaProxy:MediaProxy;
 		private var _mediator:DoubleclickMediator;
@@ -147,6 +149,9 @@ package
 			_mediator.eventDispatcher.addEventListener(NotificationType.CHANGE_MEDIA, runReset);
 			_mediator.eventDispatcher.addEventListener(NotificationType.PLAYBACK_COMPLETE, playbackComplete);
 			_mediator.eventDispatcher.addEventListener(NotificationType.DO_REPLAY, runReset);
+			
+			if(!_configProxy)
+				_configProxy	= (_facade.retrieveProxy("configProxy") as ConfigProxy);
 		}  
 		
 		/**
@@ -179,7 +184,7 @@ package
 			
 			if(!_sequenceProxy)
 				_sequenceProxy	= (_facade.retrieveProxy("sequenceProxy") as SequenceProxy);
-			
+
 			if(!_playerMediator)
 				_playerMediator	= (_facade.retrieveMediator("kMediaPlayerMediator") as KMediaPlayerMediator);
 			
@@ -245,6 +250,9 @@ package
 			// The AdsRequest encapsulates all the properties required to request ads.
 			var adsRequest:AdsRequest = new AdsRequest();
 			adsRequest.adTagUrl = adTag;
+			if (_configProxy && _configProxy.vo.flashvars && _configProxy.vo.flashvars.localizationCode){				
+				adsRequest.language = _configProxy.vo.flashvars.localizationCode;
+			}
 			adsRequest.disableCompanionAds	= disableCompanionAds;
 			adsRequest.linearAdSlotWidth 	= this.width;
 			adsRequest.linearAdSlotHeight 	= this.height;
