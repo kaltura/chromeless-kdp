@@ -28,7 +28,6 @@ package
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.TimerEvent;
-	import flash.external.ExternalInterface;
 	import flash.system.Security;
 	import flash.utils.Timer;
 	
