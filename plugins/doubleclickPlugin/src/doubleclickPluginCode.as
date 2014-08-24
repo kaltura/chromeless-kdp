@@ -506,20 +506,20 @@ package
 			if (!_adManagers) 
 				return;
 			try{
-			for(var i:int=0;i<_adManagers.length;i++){
-				if (_adManagers[i].cuePoints.length == 0) 
-				{
-					if (_adManagers[i].adsContainer.parent &&
-						_adManagers[i].adsContainer.parent.contains(adsManager.adsContainer)) 
+				for(var i:int=0;i<_adManagers.length;i++){
+					if (_adManagers[i].cuePoints.length == 0) 
 					{
-						_adManagers[i].adsContainer.parent.removeChild(_adManagers[i].adsContainer);						
-						
-					}	
-					_adManagers[i].destroy();
-				}else if(arg0 == "all"){
-					_adManagers[i].destroy();
+						if (_adManagers[i].adsContainer.parent &&
+							_adManagers[i].adsContainer.parent.contains(adsManager.adsContainer)) 
+						{
+							_adManagers[i].adsContainer.parent.removeChild(_adManagers[i].adsContainer);						
+							
+						}	
+						_adManagers[i].destroy();
+					}else if(arg0 == "all"){
+						_adManagers[i].destroy();
+					}
 				}
-			}
 			}catch(e:Error){
 				log("destroyAdsManager : Error: "+e.message);
 			}
