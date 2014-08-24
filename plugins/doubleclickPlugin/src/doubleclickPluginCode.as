@@ -12,9 +12,9 @@ package
 	import com.google.ads.ima.api.FlashCompanionAd;
 	import com.google.ads.ima.api.HtmlCompanionAd;
 	import com.google.ads.ima.api.ViewModes;
+	import com.kaltura.kdpfl.model.ConfigProxy;
 	import com.kaltura.kdpfl.model.MediaProxy;
 	import com.kaltura.kdpfl.model.SequenceProxy;
-	import com.kaltura.kdpfl.model.ConfigProxy;
 	import com.kaltura.kdpfl.model.type.NotificationType;
 	import com.kaltura.kdpfl.model.type.SequenceContextType;
 	import com.kaltura.kdpfl.plugin.IPlugin;
@@ -28,6 +28,7 @@ package
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.TimerEvent;
+	import flash.external.ExternalInterface;
 	import flash.system.Security;
 	import flash.utils.Timer;
 	
@@ -505,7 +506,7 @@ package
 			log("destroyAdsManager"); 
 			if (!_adManagers) 
 				return;
-			
+			try{
 			for(var i:int=0;i<_adManagers.length;i++){
 				if (_adManagers[i].cuePoints.length == 0) 
 				{
@@ -515,14 +516,13 @@ package
 						_adManagers[i].adsContainer.parent.removeChild(_adManagers[i].adsContainer);						
 						
 					}	
-					try{
-						_adManagers[i].destroy();
-					}catch(e:Error){}
+					_adManagers[i].destroy();
 				}else if(arg0 == "all"){
-					try{
-						_adManagers[i].destroy();
-					}catch(e:Error){}
+					_adManagers[i].destroy();
 				}
+			}
+			}catch(e:Error){
+				log("destroyAdsManager : Error: "+e.message);
 			}
 			
 		}
