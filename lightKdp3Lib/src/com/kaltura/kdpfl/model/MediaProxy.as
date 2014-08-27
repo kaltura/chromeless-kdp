@@ -544,7 +544,7 @@ package com.kaltura.kdpfl.model
 				{
 					if (!vo.isHds)
 						prepareMediaElement();
-					sendNotification(NotificationType.ENABLE_GUI, {guiEnabled : false , enableType : EnableType.CONTROLS});
+					//sendNotification(NotificationType.ENABLE_GUI, {guiEnabled : false , enableType : EnableType.CONTROLS});
 					sendNotification(NotificationType.LIVE_ENTRY, vo.resource);
 				}
 			}
