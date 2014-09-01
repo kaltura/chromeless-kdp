@@ -578,13 +578,12 @@ package com.kaltura.kdpfl.view.media
 					break;
 				
 				case NotificationType.HAS_OPENED_FULL_SCREEN:
-					if (_flashvars.maxAllowedFSBitrateIndex && player.isDynamicStream) player.maxAllowedDynamicStreamIndex = _flashvars.maxAllowedFSBitrateIndex ;
+					if (_flashvars.maxAllowedFSBitrate && player.isDynamicStream) player.maxAllowedDynamicStreamIndex = findStreamByBitrate( _flashvars.maxAllowedFSBitrate );
 					break;
 				
 				case NotificationType.HAS_CLOSED_FULL_SCREEN:
-					if (_flashvars.maxAllowedRegularBitrateIndex && player.isDynamicStream) player.maxAllowedDynamicStreamIndex =  _flashvars.maxAllowedRegularBitrateIndex ;
+					if (_flashvars.maxAllowedRegularBitrate && player.isDynamicStream) player.maxAllowedDynamicStreamIndex = findStreamByBitrate( _flashvars.maxAllowedRegularBitrate );
 					break;
-				
 				
 				case NotificationType.VIDEO_METADATA_RECEIVED:
 					//try to pre play seek only after we received video metadata and know if we can intelli seek
@@ -675,6 +674,9 @@ package com.kaltura.kdpfl.view.media
 					sendNotification(NotificationType.FLAVORS_LIST_CHANGED, {flavors: flvArray});
 					sendNotification( NotificationType.SWITCHING_CHANGE_COMPLETE, {newIndex : dynamicTrait.currentIndex , newBitrate: dynamicTrait.getBitrateForIndex( dynamicTrait.currentIndex )}  );	
 					_mediaProxy.vo.media.removeEventListener(MediaElementEvent.TRAIT_ADD, onDynamicStreamTraitAdd);
+					
+					if (_flashvars.maxAllowedRegularBitrate) 
+						player.maxAllowedDynamicStreamIndex = findStreamByBitrate( _flashvars.maxAllowedRegularBitrate );
 				}
 			}
 			
@@ -906,7 +908,6 @@ package com.kaltura.kdpfl.view.media
 					
 					if(!_hasPlayed && !_sequenceProxy.vo.isInSequence){
 						_hasPlayed = true;
-						//if (_flashvars.maxAllowedRegularBitrate && player.isDynamicStream) player.maxAllowedDynamicStreamIndex = kMediaPlayer.findStreamByBitrate( _flashvars.maxAllowedRegularBitrate );
 					}
 					
 					if (player.media != null && !_sequenceProxy.vo.isInSequence)
@@ -1428,6 +1429,67 @@ package com.kaltura.kdpfl.view.media
 		public function getCurrentTime():Number
 		{
 			return _sequenceProxy.vo.isInSequence ? player.currentTime : player.currentTime + _offsetAddition;
+		}
+		
+		/**
+		 * This function searches for the flavor with the preferedBitrate value bitrate among the flavors belonging to the media.
+		 * @param preferedBitrate The value of the prefered bitrate to search for among the stream items of the media.
+		 * @return The function returns the index of the streamItem with the prefered bitrate
+		 * 
+		 */		
+		public function findStreamByBitrate (preferedBitrate : int) : int
+		{
+			var foundStreamIndex:int = -1;
+			
+			if (player.numDynamicStreams > 0)
+			{
+				for(var i:int = 0; i < player.numDynamicStreams; i++)
+				{
+					var lastb:Number;
+					if(i!=0)
+						lastb = player.getBitrateForDynamicStreamIndex(i-1);
+					
+					var b:Number = player.getBitrateForDynamicStreamIndex(i);
+					b = Math.round(b/100) * 100;
+					
+					if (b == preferedBitrate)
+					{
+						//if we found it set it and leave
+						foundStreamIndex = i;
+						return foundStreamIndex;
+					}
+					else if(i == 0 && preferedBitrate < b)
+					{
+						//if the first is bigger then the prefered bitrate set it and leave
+						foundStreamIndex = i;
+						return foundStreamIndex;
+					}
+					else if( lastb && preferedBitrate < b  && preferedBitrate > lastb )
+					{
+						//if the prefered bit rate is between the last index and the current choose the closer one
+						var topDelta : int = b - preferedBitrate;
+						var bottomDelta : int = preferedBitrate - lastb;
+						if(topDelta<=bottomDelta)
+						{
+							foundStreamIndex = i;
+							return foundStreamIndex;
+						}
+						else
+						{
+							foundStreamIndex = i-1;
+							return foundStreamIndex;
+						}
+					}
+					else if(i == player.numDynamicStreams-1 && preferedBitrate >= b)
+					{
+						//if this is the last index and the prefered bitrate is still bigger then the last one
+						foundStreamIndex = i;
+						return foundStreamIndex;
+					}
+				}
+			}
+			
+			return foundStreamIndex;
 		}
 		
 	}
