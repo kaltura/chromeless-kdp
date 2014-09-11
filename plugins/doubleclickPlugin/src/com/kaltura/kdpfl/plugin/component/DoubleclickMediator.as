@@ -173,9 +173,9 @@ package com.kaltura.kdpfl.plugin.component
 					break;
 				case NotificationType.DO_PLAY:
 					//work around for race condition where playback fires off while an adRule(pre) is in progress.
-					if(_plugin.adInProgress){
-						stopPlayback();
-					}
+//					if(_plugin.adInProgress){
+//						stopPlayback();
+//					}
 					
 					//if playback completed and the current entryID matches the server id and isReplay hasn't been set
 					//then this must be a replay
