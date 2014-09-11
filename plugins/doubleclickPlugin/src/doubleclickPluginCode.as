@@ -570,7 +570,7 @@ package
 				_facade.sendNotification("adStart", {context:_adContext, duration:event.ad.duration, adID: event.ad.id});
 				
 				_mediator.stopPlayback();
-				_mediator.disableControls();
+			//	_mediator.disableControls();
 			}
 			
 			// This loads and displays the Companion Ads 
