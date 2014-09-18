@@ -493,6 +493,11 @@ package com.kaltura.kdpfl.model.type
 		 * */ 
 		 static public const DO_AUDIO_SWITCH:String = "doAudioSwitch";
 		 
+		 /**
+		 * Will indicate livestream is offline and we are in "VOD" mode
+		 * */ 
+		 static public const LIVE_EVENT_ENDED:String = "liveEventEnded";
+		 
 
 	}
 }

@@ -162,6 +162,8 @@ package com.kaltura.kdpfl.view.media
 		 */		
 		private var _mediaErrorSent:Boolean = false;
 		
+		private var _liveEventEnded:Boolean = false;
+		
 		
 		/**
 		 * Constructor 
@@ -229,7 +231,9 @@ package com.kaltura.kdpfl.view.media
 				root.addEventListener( MouseEvent.CLICK , onMClick );
 			} 
 
-		}	
+		}
+		
+		
 		
 		// Listen for a change in the number of alternative streams associated with this video. 
 		private function onNumAlternativeAudioStreamsChange(event:AlternativeAudioEvent):void 
@@ -316,7 +320,8 @@ package com.kaltura.kdpfl.view.media
 				NotificationType.MEDIA_ELEMENT_READY,
 				NotificationType.GO_LIVE,
 				NotificationType.MEDIA_LOADED,
-				NotificationType.DO_AUDIO_SWITCH
+				NotificationType.DO_AUDIO_SWITCH,
+				NotificationType.LIVE_EVENT_ENDED
 			];
 		}
 		
@@ -347,6 +352,7 @@ package com.kaltura.kdpfl.view.media
 					ignorePlaybackComplete = false;
 					_mediaErrorSent = false;
 					dvrWinSize = 0;
+					_liveEventEnded = false;
 					//Fixed weird issue, where the CHANGE_MEDIA would be caught by the mediator 
 					// AFTER the new media has already loaded. Caused media never to be loaded.
 					if (designatedEntryId != _mediaProxy.vo.entryUrl || _mediaProxy.vo.isFlavorSwitching )
@@ -485,7 +491,7 @@ package com.kaltura.kdpfl.view.media
 						}
 						if (_mediaProxy.vo.isLive)
 						{
-							if (!player.canPause || !player.canSeek) {
+							if ( !_liveEventEnded && ( !player.canPause || !player.canSeek) ) {
 								player.stop();
 								//to reload the media
 								_mediaProxy.shouldWaitForElement = true;
@@ -607,7 +613,14 @@ package com.kaltura.kdpfl.view.media
 					break;
 				
 				case NotificationType.GO_LIVE:
-					if (_mediaProxy.vo.isLive && _mediaProxy.vo.canSeek)
+					if ( _liveEventEnded ) {
+						player.stop();
+						//to reload the media
+						_mediaProxy.shouldWaitForElement = true;
+						
+						sendNotification(NotificationType.DO_PLAY);
+					}
+					else if (_mediaProxy.vo.isLive && _mediaProxy.vo.canSeek)
 					{
 						if (_hasPlayed && _inDvr)
 							sendNotification(NotificationType.DO_SEEK, player.duration);
@@ -632,6 +645,10 @@ package com.kaltura.kdpfl.view.media
 					{    
 						player.switchAlternativeAudioIndex(note.getBody().audioIndex); 
 					}     
+					break;
+				
+				case NotificationType.LIVE_EVENT_ENDED:
+					_liveEventEnded = true;
 					break;
 			}
 		}
@@ -1224,6 +1241,9 @@ package com.kaltura.kdpfl.view.media
 		 */		
 		private function onDurationChange( event : TimeEvent ) : void
 		{
+
+			
+			
 			//don't change duration on intelliseek, only if we are playing an ad
 			if (_isIntelliSeeking)
 			{

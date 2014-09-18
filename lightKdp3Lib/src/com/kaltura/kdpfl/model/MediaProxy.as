@@ -440,8 +440,11 @@ package com.kaltura.kdpfl.model
 		 */       
 		private function onMetadata(info:Object):void// reads metadata..
 		{
-			vo.keyframeValuesArray=info.times; 
-			sendNotification(NotificationType.VIDEO_METADATA_RECEIVED, {keyframeValuesArray: vo.keyframeValuesArray});
+			if ( info.hasOwnProperty("times") ) {
+				vo.keyframeValuesArray=info.times; 
+				sendNotification(NotificationType.VIDEO_METADATA_RECEIVED, {keyframeValuesArray: vo.keyframeValuesArray});
+			}
+
 		}
 		
 		/**
