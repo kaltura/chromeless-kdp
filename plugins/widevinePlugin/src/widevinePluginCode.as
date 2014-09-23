@@ -35,12 +35,40 @@ package
 		 */		
 		public var mbrTag:String = "widevine_mbr";
 		
+		private var _mediaWidth:Number = 400;
+
+		private var _mediaHeight:Number = 300;
+		
 		public function widevinePluginCode()
 		{
 			trace('Widevine plugin v3');
 			super();
 		}
 		
+		[Bindable]
+		public function get mediaHeight():Number
+		{
+			return _mediaHeight;
+		}
+
+		public function set mediaHeight(value:Number):void
+		{
+			_mediaHeight = value;
+			WVPluginInfo.mediaHeight = value;
+		}
+
+		[Bindable]
+		public function get mediaWidth():Number
+		{
+			return _mediaWidth;
+		}
+
+		public function set mediaWidth(value:Number):void
+		{
+			_mediaWidth = value;
+			WVPluginInfo.mediaWidth = value;
+		}
+
 		public function initializePlugin(facade:IFacade):void
 		{
 			if (flavorTags)
