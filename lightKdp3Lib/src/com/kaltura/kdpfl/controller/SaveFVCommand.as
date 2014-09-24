@@ -3,13 +3,14 @@ package com.kaltura.kdpfl.controller
 	import com.kaltura.kdpfl.ApplicationFacade;
 	import com.kaltura.kdpfl.model.ConfigProxy;
 	import com.kaltura.kdpfl.model.MediaProxy;
+	import com.kaltura.kdpfl.model.strings.MessageStrings;
 	import com.kaltura.kdpfl.model.type.DebugLevel;
 	import com.kaltura.kdpfl.model.type.StreamerType;
 	import com.kaltura.kdpfl.model.vo.ConfigVO;
 	
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.command.SimpleCommand;
-	import com.kaltura.kdpfl.model.strings.MessageStrings;
+	import com.kaltura.kdpfl.view.controls.KTrace;
 
 	/**
 	 * This class syncronises between flash application parameters and parameters passed
@@ -32,8 +33,20 @@ package com.kaltura.kdpfl.controller
 			_config = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
 			var flashvars:Object = (_config.getData() as ConfigVO).flashvars;
 	
-			if (flashvars.hasOwnProperty("streamerType"))
-				mediaProxy.vo.deliveryType = flashvars.streamerType;
+			if (flashvars.hasOwnProperty("streamerType")) {
+				if ( flashvars.streamerType == StreamerType.HDNETWORK 
+					|| flashvars.streamerType == StreamerType.HDNETWORK_HDS
+					|| flashvars.streamerType == StreamerType.HDS
+					|| flashvars.streamerType == StreamerType.HLS
+					|| flashvars.streamerType == StreamerType.HTTP
+					|| flashvars.streamerType == StreamerType.LIVE
+					|| flashvars.streamerType == StreamerType.RTMP ) {
+					
+					mediaProxy.vo.deliveryType = flashvars.streamerType;	
+				} else {
+					KTrace.getInstance().log("SaveFVCommand-->Error: unknown streamerType value: " + flashvars.streamerType +", use default HTTP" );
+				}
+			}
 			
 			if (flashvars.hasOwnProperty("sourceType"))
 				mediaProxy.vo.sourceType = flashvars.sourceType;

@@ -30,5 +30,10 @@ package com.kaltura.kdpfl.model.type
 		 * StreamerType HDS represents media that is being http-dynamic-streamed.
 		 */		
 		public static const HDS : String = "hds";
+
+		/**
+		 * StreamerType HLS represents m3u8 media.
+		 */		
+		public static const HLS : String = "hls";
 	}
 }

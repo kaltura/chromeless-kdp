@@ -117,6 +117,7 @@ package com.kaltura.kdpfl.model
 					createElement(rtmpUrl);
 					
 					break;
+				case StreamerType.HLS:
 				case StreamerType.HTTP:
 				case StreamerType.HDNETWORK:
 				case StreamerType.HDNETWORK_HDS:
@@ -146,7 +147,7 @@ package com.kaltura.kdpfl.model
 				endIndex = resourceUrl.length;
 			var postfix:String = resourceUrl.substring(endIndex-4, endIndex);
 			//url resource
-			if (vo.sourceType == SourceType.URL || postfix!=".f4m" || vo.deliveryType == StreamerType.HDNETWORK || vo.isTwoPhaseManifest || vo.isHds)
+			if (vo.sourceType == SourceType.URL || postfix!=".f4m" || vo.deliveryType == StreamerType.HDNETWORK || vo.isTwoPhaseManifest || vo.isHds || vo.deliveryType == StreamerType.HLS )
 			{
 				resource = new StreamingURLResource(resourceUrl, StreamType.LIVE_OR_RECORDED);
 				addMetadataToResource(resource);
