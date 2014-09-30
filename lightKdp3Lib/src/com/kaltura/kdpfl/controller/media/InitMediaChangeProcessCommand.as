@@ -57,7 +57,7 @@ package com.kaltura.kdpfl.controller.media
 
 			if (note.hasOwnProperty("entryUrl") && note.entryUrl) {
 				_mediaProxy.vo.entryUrl = note.entryUrl;
-				_mediaProxy.vo.entryDuration = ( flashvars.entryDuration ) ? flashvars.entryDuration : int.MIN_VALUE;
+				//_mediaProxy.vo.entryDuration = ( flashvars.entryDuration ) ? flashvars.entryDuration : int.MIN_VALUE;
 				sendNotification(NotificationType.CHANGE_MEDIA_PROCESS_STARTED, {entryUrl: note.entryUrl});
 				//set the offline message to false
 				_mediaProxy.vo.isOffline = true;

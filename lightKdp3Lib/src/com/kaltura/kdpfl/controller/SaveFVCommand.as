@@ -109,6 +109,9 @@ package com.kaltura.kdpfl.controller
 			
 			if (flashvars.isMp4 && flashvars.isMp4 == "true")
 				mediaProxy.vo.isMp4 = true;
+
+			if (flashvars.entryDuration)
+				mediaProxy.vo.entryDuration = flashvars.entryDuration;
 			
 			MessageStrings.init(flashvars);
 			

@@ -164,6 +164,8 @@ package com.kaltura.kdpfl.view.media
 		
 		private var _liveEventEnded:Boolean = false;
 		
+		private var _wasSeeking:Boolean = false;
+		
 		
 		/**
 		 * Constructor 
@@ -353,6 +355,8 @@ package com.kaltura.kdpfl.view.media
 					_mediaErrorSent = false;
 					dvrWinSize = 0;
 					_liveEventEnded = false;
+					_wasSeeking = false;
+					entryDuration = _mediaProxy.vo.entryDuration;
 					//Fixed weird issue, where the CHANGE_MEDIA would be caught by the mediator 
 					// AFTER the new media has already loaded. Caused media never to be loaded.
 					if (designatedEntryId != _mediaProxy.vo.entryUrl || _mediaProxy.vo.isFlavorSwitching )
@@ -368,8 +372,14 @@ package com.kaltura.kdpfl.view.media
 						if (!_waitForMediaElement)
 						{
 							sendNotification(NotificationType.ENABLE_GUI, {guiEnabled : false , enableType : EnableType.CONTROLS});
-							_waitForMediaElement = true;
-							_mediaProxy.prepareMediaElement();
+							if ( _mediaProxy.vo.mediaPlayFrom != -1 && _mediaProxy.vo.deliveryType == StreamerType.HTTP ) {
+								doIntelliSeek( _mediaProxy.vo.mediaPlayFrom );
+								_mediaProxy.vo.mediaPlayFrom = -1;
+							} else {
+								_waitForMediaElement = true;
+								_mediaProxy.prepareMediaElement();	
+							}
+							
 						}	
 					}
 					else
@@ -386,6 +396,7 @@ package com.kaltura.kdpfl.view.media
 						sendNotification(NotificationType.ENABLE_GUI, {guiEnabled : true , enableType : EnableType.CONTROLS});
 						onDoPlay();
 					}
+
 					if (_mediaProxy.vo.isLive && _mediaProxy.vo.canSeek && _mediaProxy.vo.media)
 					{
 						_mediaProxy.vo.media.addEventListener(MediaElementEvent.TRAIT_ADD, onMediaTraitAdd);
@@ -1253,6 +1264,7 @@ package com.kaltura.kdpfl.view.media
 				}
 				else
 				{
+					
 					sendNotification( NotificationType.DURATION_CHANGE , {newValue:entryDuration});
 					if (isMP4Stream())
 					{
@@ -1267,6 +1279,7 @@ package com.kaltura.kdpfl.view.media
 							_isIntelliSeeking = false;
 						}
 					}
+					
 				}
 			}
 			else if(event.time)
@@ -1351,8 +1364,10 @@ package com.kaltura.kdpfl.view.media
 		private function onSeekingChange( event: SeekEvent ) : void 
 		{
 			if ( event.seeking ) {
+				_wasSeeking = true;
 				sendNotification(NotificationType.PLAYER_SEEK_START);
-			} else {
+			} else if ( _wasSeeking ) {
+				_wasSeeking = false;
 				sendNotification( NotificationType.PLAYER_UPDATE_PLAYHEAD , getCurrentTime() );
 				sendNotification(NotificationType.PLAYER_SEEK_END);
 			}
