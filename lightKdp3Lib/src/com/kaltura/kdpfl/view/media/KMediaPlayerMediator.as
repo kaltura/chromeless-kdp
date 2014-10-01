@@ -716,14 +716,19 @@ package com.kaltura.kdpfl.view.media
 		
 		private function doSeek(seekTo:Number):void
 		{
-			player.seek(seekTo);
+			
 			if (_mediaProxy.vo.isLive)
 			{
+				if ( seekTo > player.duration ) {
+					seekTo = player.duration;
+				}
+				
 				if (seekTo==player.duration)
 					_inDvr = false;
 				else
 					_inDvr = true;
 			}
+			player.seek(seekTo);
 		}
 		
 		/**
