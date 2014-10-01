@@ -162,7 +162,7 @@ package com.kaltura.kdpfl.plugin.component
 					break;
 				case NotificationType.CHANGE_MEDIA:
 					eventDispatcher.dispatchEvent(new Event(NotificationType.CHANGE_MEDIA));
-					_entryUrl					= data.entryId;
+					_entryUrl					= data.entryUrl;
 					_playbackComplete			= false;
 					_adContext					= "";
 					break;

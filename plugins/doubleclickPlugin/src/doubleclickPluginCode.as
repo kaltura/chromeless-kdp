@@ -259,27 +259,13 @@ package
 			adsRequest.nonLinearAdSlotWidth = this.width;
 			adsRequest.nonLinearAdSlotHeight = this.height;
 			
-			var loaderType:AdsLoader;
-			if(_adsLoader.type != "adRule"){
-				//typically the first loader request should be an adRule, so we give it global scope. 
-				_adsLoader.loader = new AdsLoader();
-				
-				//add IMASdkSettings?
-				_adsLoader.loader.addEventListener(AdsManagerLoadedEvent.ADS_MANAGER_LOADED, adsManagerLoadedHandler);
-				_adsLoader.loader.addEventListener(AdErrorEvent.AD_ERROR, adsLoadErrorHandler);
-				loaderType	= _adsLoader.loader;
-				
-			}else{
-				var nonAdRuleLoader:AdsLoader	= new AdsLoader();
-				
-				nonAdRuleLoader.addEventListener(AdsManagerLoadedEvent.ADS_MANAGER_LOADED, adsManagerLoadedHandler);
-				nonAdRuleLoader.addEventListener(AdErrorEvent.AD_ERROR, adsLoadErrorHandler);
-				
-				loaderType			= nonAdRuleLoader;
-			}
+
+			_adsLoader.loader = new AdsLoader();		
+			_adsLoader.loader.addEventListener(AdsManagerLoadedEvent.ADS_MANAGER_LOADED, adsManagerLoadedHandler);
+			_adsLoader.loader.addEventListener(AdErrorEvent.AD_ERROR, adsLoadErrorHandler);
 			
 			// Instruct AdsLoader to request ads using the AdsRequest object.
-			loaderType.requestAds(adsRequest);
+			_adsLoader.loader.requestAds(adsRequest);
 			
 			
 		}
