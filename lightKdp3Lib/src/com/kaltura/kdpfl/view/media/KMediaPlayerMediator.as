@@ -203,6 +203,10 @@ package com.kaltura.kdpfl.view.media
 			
 			//autoRewind Indicates which frame of a video the MediaPlayer displays after playback completes. 
 			if(_flashvars.autoRewind == "true") player.autoRewind =  true;
+			else {
+				player.autoRewind = false;
+				
+			}
 			
 			//if an autoMute flashvar passed as true mute the volume 
 			if(_flashvars.autoMute == "true") _autoMute=true;
