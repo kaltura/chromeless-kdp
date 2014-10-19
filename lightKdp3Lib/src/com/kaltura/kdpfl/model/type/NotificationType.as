@@ -252,6 +252,8 @@ package com.kaltura.kdpfl.model.type
 	
 		 *message - string containing the message to display in the alert
 		 *title - string containing the title of the alert
+		 *messageKey - string representing message key, if such key exists in HTML5 lib it will override the given message with its matching message
+		 *titleKey - string representing title key, if such key exists in HTML5 lib it will override the given title with its matching message
 		 *buttons - array of strings for the alert button labels
 		 *callbackFunction - the function which handles an alert button being clicked.
 		 *iconClass - string containing the name of the export class of the icon that the alert should display (should exist in the skin.swf file).

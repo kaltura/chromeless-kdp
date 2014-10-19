@@ -1,7 +1,6 @@
 package com.kaltura.kdpfl.model
 {
 	import com.kaltura.kdpfl.model.strings.MessageStrings;
-	import com.kaltura.kdpfl.model.type.EnableType;
 	import com.kaltura.kdpfl.model.type.NotificationType;
 	import com.kaltura.kdpfl.model.type.SourceType;
 	import com.kaltura.kdpfl.model.type.StreamerType;
@@ -25,21 +24,20 @@ package com.kaltura.kdpfl.model
 	import org.osmf.elements.VideoElement;
 	import org.osmf.events.MediaErrorCodes;
 	import org.osmf.events.MediaErrorEvent;
+	import org.osmf.layout.HorizontalAlign;
+	import org.osmf.layout.LayoutMetadata;
+	import org.osmf.layout.LayoutMode;
+	import org.osmf.layout.ScaleMode;
+	import org.osmf.layout.VerticalAlign;
 	import org.osmf.media.MediaElement;
 	import org.osmf.media.MediaResourceBase;
 	import org.osmf.media.URLResource;
 	import org.osmf.metadata.Metadata;
 	import org.osmf.metadata.MetadataNamespaces;
-	import org.osmf.net.DynamicStreamingResource;
 	import org.osmf.net.NetStreamCodes;
 	import org.osmf.net.StreamType;
 	import org.osmf.net.StreamingURLResource;
 	import org.puremvc.as3.patterns.proxy.Proxy;
-    import org.osmf.layout.LayoutMetadata;
-    import org.osmf.layout.HorizontalAlign;
-    import org.osmf.layout.VerticalAlign;
-    import org.osmf.layout.ScaleMode;
-    import org.osmf.layout.LayoutMode;
     
 	/**
 	 * This class is the proxy for the media playing in the media player.
@@ -369,7 +367,7 @@ package com.kaltura.kdpfl.model
 				_isElementLoaded = false;
 				vo.media.addEventListener(MediaErrorEvent.MEDIA_ERROR, onError);
 				_sendMediaReady = true;
-				
+
 				sendNotification(NotificationType.SOURCE_READY);
 			}
 			
@@ -464,7 +462,7 @@ package com.kaltura.kdpfl.model
 				{
 					sendNotification(NotificationType.MEDIA_ERROR , {errorEvent : evt});
 					sendNotification(NotificationType.DO_STOP);
-					sendNotification(NotificationType.ALERT,{message:MessageStrings.getString('CLIP_NOT_FOUND'),title:MessageStrings.getString('CLIP_NOT_FOUND_TITLE')})
+					sendNotification(NotificationType.ALERT,{message:MessageStrings.getString('CLIP_NOT_FOUND'),title:MessageStrings.getString('CLIP_NOT_FOUND_TITLE'), messageKey: 'ks-CLIP_NOT_FOUND', titleKey: 'ks-CLIP_NOT_FOUND_TITLE'});
 				}
 			}
 		}
