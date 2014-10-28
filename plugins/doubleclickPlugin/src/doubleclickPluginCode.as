@@ -206,6 +206,18 @@ package
 				adsManager.volume = val;
 			}
 		}
+
+		public function pauseAd():void {
+			if ( adsManager ) {
+				adsManager.pause();
+			}
+		}
+
+		public function resumeAd():void {
+			if ( adsManager ) {
+				adsManager.resume();
+			}
+		}
 		
 		public function onResize( size:Object ):void {
 			if ( _adManagers ) {
