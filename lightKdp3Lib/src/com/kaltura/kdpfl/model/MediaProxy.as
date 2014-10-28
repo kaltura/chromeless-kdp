@@ -460,9 +460,9 @@ package com.kaltura.kdpfl.model
 				}
 				else 
 				{
-					sendNotification(NotificationType.MEDIA_ERROR , {errorEvent : evt});
+					sendNotification(NotificationType.MEDIA_ERROR, {error: evt.error} );
 					sendNotification(NotificationType.DO_STOP);
-					sendNotification(NotificationType.ALERT,{message:MessageStrings.getString('CLIP_NOT_FOUND'),title:MessageStrings.getString('CLIP_NOT_FOUND_TITLE'), messageKey: 'ks-CLIP_NOT_FOUND', titleKey: 'ks-CLIP_NOT_FOUND_TITLE'});
+				//	sendNotification(NotificationType.ALERT,{message:MessageStrings.getString('CLIP_NOT_FOUND'),title:MessageStrings.getString('CLIP_NOT_FOUND_TITLE'), messageKey: 'ks-CLIP_NOT_FOUND', titleKey: 'ks-CLIP_NOT_FOUND_TITLE'});
 				}
 			}
 		}

@@ -1348,7 +1348,7 @@ package com.kaltura.kdpfl.view.media
 		 */		
 		private function onMediaError( event : MediaErrorEvent ) : void
 		{
-			sendNotification( NotificationType.MEDIA_ERROR , {errorEvent: event} );
+			sendNotification( NotificationType.MEDIA_ERROR , {error: event.error} );
 		}
 		
 		/**
