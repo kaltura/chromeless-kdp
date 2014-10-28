@@ -221,7 +221,6 @@ package com.kaltura.kdpfl.view.media
 			player.addEventListener( AudioEvent.VOLUME_CHANGE , onVolumeChangeEvent );
 			player.addEventListener( BufferEvent.BUFFER_TIME_CHANGE , onBufferTimeChange );
 			player.addEventListener( BufferEvent.BUFFERING_CHANGE , onBufferingChange );
-			player.addEventListener( MediaErrorEvent.MEDIA_ERROR , onMediaError );
 			
 			player.addEventListener( LoadEvent.BYTES_TOTAL_CHANGE , onBytesTotalChange );
 			player.addEventListener( LoadEvent.BYTES_LOADED_CHANGE , onBytesDownloadedChange );
@@ -1341,15 +1340,7 @@ package com.kaltura.kdpfl.view.media
 			}
 			
 		}
-		/**
-		 * A MediaElement dispatches a MediaErrorEvent when it encounters an error.  
-		 * @param event
-		 * 
-		 */		
-		private function onMediaError( event : MediaErrorEvent ) : void
-		{
-			sendNotification( NotificationType.MEDIA_ERROR , {error: event.error} );
-		}
+
 		
 		/**
 		 * 

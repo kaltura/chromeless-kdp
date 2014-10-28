@@ -365,6 +365,7 @@ package com.kaltura.kdpfl.model
 			if (vo.media)
 			{
 				_isElementLoaded = false;
+				vo.media.removeEventListener(MediaErrorEvent.MEDIA_ERROR, onError);
 				vo.media.addEventListener(MediaErrorEvent.MEDIA_ERROR, onError);
 				_sendMediaReady = true;
 
@@ -382,6 +383,7 @@ package com.kaltura.kdpfl.model
 		public function loadWithoutMediaReady (doPlay : Boolean = false) : void
 		{
 			_isElementLoaded = false;
+			vo.media.removeEventListener(MediaErrorEvent.MEDIA_ERROR, onError);
 			vo.media.addEventListener(MediaErrorEvent.MEDIA_ERROR, onError);
 			vo.playOnLoad = doPlay;
 			_sendMediaReady = false;
