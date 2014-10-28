@@ -462,9 +462,18 @@ package com.kaltura.kdpfl.model
 				}
 				else 
 				{
-					sendNotification(NotificationType.MEDIA_ERROR, {error: evt.error} );
+					var errorObject:Object = {};
+					if ( evt.error ) {
+						errorObject['errorId'] = evt.error.errorID;
+						errorObject['errorDetail'] = evt.error.detail;
+						errorObject['errorMessage'] = evt.error.message;
+						errorObject['stackTrace'] = evt.error.getStackTrace();
+					}
+					errorObject['currentDynamicStramIndex'] = (facade.retrieveMediator(KMediaPlayerMediator.NAME) as KMediaPlayerMediator).player.currentDynamicStreamIndex;
+					errorObject['initialStreamIndex'] = startingIndex;
+					sendNotification(NotificationType.MEDIA_ERROR, errorObject );
 					sendNotification(NotificationType.DO_STOP);
-				//	sendNotification(NotificationType.ALERT,{message:MessageStrings.getString('CLIP_NOT_FOUND'),title:MessageStrings.getString('CLIP_NOT_FOUND_TITLE'), messageKey: 'ks-CLIP_NOT_FOUND', titleKey: 'ks-CLIP_NOT_FOUND_TITLE'});
+				
 				}
 			}
 		}
