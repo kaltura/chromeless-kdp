@@ -115,6 +115,8 @@ package com.kaltura.kdpfl.plugin.component
 				NotificationType.DO_PLAY,
 				NotificationType.PLAYER_UPDATE_PLAYHEAD,
 				NotificationType.ROOT_RESIZE,
+				"pauseAd",
+				"resumeAd",
 				"adStarted",
 				"requestAds",
 				"destroy"
@@ -188,6 +190,12 @@ package com.kaltura.kdpfl.plugin.component
 						eventDispatcher.dispatchEvent(new Event(NotificationType.DO_REPLAY));
 					}
 					
+					break;
+				case "pauseAd":
+					_plugin.pauseAd();
+					break;		
+				case "resumeAd":
+					_plugin.resumeAd();
 					break;
 				case "requestAds":
 					_plugin.requestAdExternal(data);
