@@ -1260,9 +1260,7 @@ package com.kaltura.kdpfl.view.media
 		 */		
 		private function onDurationChange( event : TimeEvent ) : void
 		{
-
-			
-			
+	
 			//don't change duration on intelliseek, only if we are playing an ad
 			if (_isIntelliSeeking)
 			{
@@ -1292,15 +1290,7 @@ package com.kaltura.kdpfl.view.media
 			}
 			else if(event.time)
 			{
-				//in live dvr: minimum duration should be dvrwindow size
-				if (_mediaProxy.vo.isLive)
-				{
-					_duration = Math.max(dvrWinSize, event.time);
-				}
-				else
-				{
-					_duration=event.time;
-				}
+				_duration=event.time;
 				sendNotification( NotificationType.DURATION_CHANGE , {newValue:_duration});
 				//save entryDuration in case we will go into intelliseek and need to use it.
 				if (!_sequenceProxy.vo.isInSequence)
