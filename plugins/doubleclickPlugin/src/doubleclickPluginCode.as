@@ -346,6 +346,7 @@ package
 				adsManager.addEventListener(AdEvent.STARTED, adStartedHandler);
 				adsManager.addEventListener(AdEvent.CLICKED, function(e:AdEvent):void{
 					_isAdClicked	= true;
+					_facade.sendNotification("adClicked",{'isLinear':e.ad.linear});
 				});
 				adsManager.addEventListener(AdEvent.STOPPED, function(e:AdEvent):void{
 					log("ad stopped!");
