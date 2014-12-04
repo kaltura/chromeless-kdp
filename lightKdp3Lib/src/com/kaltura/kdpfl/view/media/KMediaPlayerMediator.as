@@ -714,7 +714,12 @@ package com.kaltura.kdpfl.view.media
 		}
 		
 		private function onEmbeddedCaptions (info: Object)  : void {
-			sendNotification("loadEmbeddedCaptions", info);
+			var proxyCaption:Object = new Object();
+			proxyCaption.text = info.text;
+			proxyCaption.trackid = info.trackid;
+			proxyCaption.language = info.language;	
+
+			sendNotification("loadEmbeddedCaptions", proxyCaption);
 		}
 		
 		private function doSeek(seekTo:Number):void

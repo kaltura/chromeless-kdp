@@ -6,14 +6,14 @@ package com.kaltura.kdpfl.plugin
 	import com.kaltura.osmf.proxy.KSwitchingProxyElement;
 	
 	import flash.events.Event;
-	
+	 
 	import org.osmf.elements.SWFElement;
 	import org.osmf.elements.SWFLoader;
 	import org.osmf.media.MediaPlayer;
 	import org.osmf.media.URLResource;
 	import org.osmf.vpaid.elements.VPAIDElement;
 	import org.osmf.vpaid.metadata.VPAIDMetadata;
-	import org.puremvc.as3.interfaces.INotification;
+	import org.puremvc.as3.interfaces.INotification; 
 	import org.puremvc.as3.patterns.mediator.Mediator;
 	
 	public class VPaidPluginMediator extends Mediator
