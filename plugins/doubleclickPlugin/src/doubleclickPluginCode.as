@@ -25,6 +25,7 @@ package
 	
 	import fl.core.UIComponent;
 	
+	import flash.display.Shape;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.TimerEvent;
@@ -102,7 +103,7 @@ package
 		private var _facade:IFacade;
 		//inspect first loaded ad to see if it has cuepoints. cuepoint == adRule  
 		private var _isAdRule:Boolean	= 	false;
-		private var _background:Sprite;
+		private var _backgroundLoaded:Boolean = false;
 		
 		/////////////////TEST AD TAG URLS\\\\\\\\\\\\\\\\\\\\
 		//also has companion ads
@@ -216,6 +217,24 @@ package
 		public function resumeAd():void {
 			if ( adsManager ) {
 				adsManager.resume();
+			}
+		}
+
+		public function hideContent():void {
+			if ( adsManager && !_backgroundLoaded) {
+				var rectangle:Shape = new Shape; 
+				rectangle.graphics.beginFill(0x000000); 
+				rectangle.graphics.drawRect(0, 0, this.width,this.height); 
+				rectangle.graphics.endFill(); 
+				adsManager.adsContainer.addChildAt(rectangle,0); 
+				_backgroundLoaded = true;
+			}
+		}
+
+		public function showContent():void {
+			if ( adsManager && _backgroundLoaded ) {
+				adsManager.adsContainer.removeChildAt(0); 
+				_backgroundLoaded = false;
 			}
 		}
 		
@@ -468,6 +487,7 @@ package
 			log("adsLoadErrorHandler ERROR.ERROR_TYPE:"+event.error.errorType);
 			_facade.sendNotification("adsLoadError");
 			contentResumeRequestedHandler();
+			showContent();
 			_mediator.sendNotification(NotificationType.DO_PLAY);
 		}
 		
