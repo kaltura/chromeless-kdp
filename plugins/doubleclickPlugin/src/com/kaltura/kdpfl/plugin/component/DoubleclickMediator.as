@@ -119,7 +119,9 @@ package com.kaltura.kdpfl.plugin.component
 				"resumeAd",
 				"adStarted",
 				"requestAds",
-				"destroy"
+				"destroy",
+				"hideContent",
+				"showContent"
 			];
 			
 			if(_plugin.trackCuePoints)
@@ -203,6 +205,12 @@ package com.kaltura.kdpfl.plugin.component
 				case "destroy":
 					_plugin.destroyAdsManager("all");
 					break;
+				case "hideContent":
+					_plugin.hideContent();
+					break;	
+				case "showContent":
+					_plugin.showContent();
+					break;	
 			}
 		}
 		
