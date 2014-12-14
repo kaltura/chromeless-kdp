@@ -84,6 +84,9 @@ package
 		//placeholder for flash companion ad
 		public var companionContainerId:String;
 		
+		// cust_params
+		public var cust_params: String;
+		
 		public var adInProgress:Boolean		= false;
 		// SDK Objects
 		private var _adsLoader:Object = {"loader":null, "type":null};
@@ -196,8 +199,8 @@ package
 			
 			this.width = adData.adType == "linear" ? adData.linearAdSlotWidth : adData.nonLinearAdSlotWidth;
 			this.height = adData.adType == "linear" ? adData.linearAdSlotHeight : adData.nonLinearAdSlotHeight;
-			
-			requestAds(unescape(adData.adTagUrl));
+			var fullAdTagUrl:String = unescape(adData.adTagUrl) + '&cust_params=' + escape(cust_params);
+			requestAds(fullAdTagUrl);
 			
 			
 		}
