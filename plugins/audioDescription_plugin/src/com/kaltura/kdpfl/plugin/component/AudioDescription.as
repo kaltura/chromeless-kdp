@@ -14,7 +14,7 @@ package com.kaltura.kdpfl.plugin.component
 	{
 		private var _sound:Sound = null;
 		private var _soundChannel:SoundChannel = null;
-		private var _position:Number = 0;
+		private var _position:Number = -1;
 		private var _isActive:Boolean = true;
 		private var _volume:Number = 1;
 
@@ -33,7 +33,9 @@ package com.kaltura.kdpfl.plugin.component
 			if (_soundChannel == null)
 			{
 				var soundTransform:SoundTransform = new SoundTransform (_isActive ? _volume : 0);
-				_soundChannel = _sound.play(_position, 0, soundTransform);
+				var pos:Number = _position == -1 ? 0 : _position;
+				_soundChannel = _sound.play(pos, 0, soundTransform);
+				_position = -1;
 			}
 		}
 				
@@ -51,7 +53,9 @@ package com.kaltura.kdpfl.plugin.component
 		{
 			if (_soundChannel != null)
 			{
-				_position = _soundChannel.position;
+				//don't override position from setSeek
+				if ( _position == -1 )
+					_position = _soundChannel.position;
 				_soundChannel.stop();
 				_soundChannel = null;
 			}

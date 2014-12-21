@@ -1,11 +1,13 @@
 package com.kaltura.kdpfl.plugin.component
 {
+	import com.kaltura.kdpfl.model.type.NotificationType;
+	import com.kaltura.kdpfl.view.media.KMediaPlayerMediator;
+	
 	import flash.display.DisplayObject;
 	import flash.events.IOErrorEvent;
 	
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
-	import com.kaltura.kdpfl.model.type.NotificationType;
 	
 
 	public class AudioDescriptionMediator extends Mediator
@@ -26,6 +28,7 @@ package com.kaltura.kdpfl.plugin.component
 						NotificationType.PLAYER_PLAYED,
 						NotificationType.PLAYER_PLAY_END,
 						NotificationType.PLAYER_PAUSED,
+						NotificationType.DO_SEEK,
 						"audioDescriptionClicked",
 						"audioDescriptionLoadFile"
 					];
@@ -52,6 +55,19 @@ package com.kaltura.kdpfl.plugin.component
 				case NotificationType.PLAYER_PAUSED:
 				{
 					(view as AudioDescription).pause();
+				}
+				break;
+
+				case NotificationType.DO_SEEK:
+				{
+					var seekTo : Number = Number(note.getBody());
+					(view as AudioDescription).setSeek(seekTo * 1000);
+					//pause play to seek in Sound obj
+					if ( (facade.retrieveMediator(KMediaPlayerMediator.NAME) as KMediaPlayerMediator).player.playing ) {
+						(view as AudioDescription).pause();
+						(view as AudioDescription).play();
+					}
+					
 				}
 				break;
 
