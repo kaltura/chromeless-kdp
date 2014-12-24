@@ -11,6 +11,7 @@
 
 
     <target name="compile">
+
     	<fb.exportReleaseBuild failonerror="true" project="KDP3" destdir="${build}"/> 
     	<copy todir="${destDir}" file="../KDP3/${build}/kdp3.swf"/>
     	<fb.exportReleaseBuild failonerror="true" project="akamaiHDPlugin" destdir="${build}"/>
@@ -25,6 +26,8 @@
     	<copy todir="${destDir}/plugins" file="../plugins/widevinePlugin/${build}/widevinePlugin.swf"/>	
     	<fb.exportReleaseBuild failonerror="true" project="kontikiPlugin" destdir="${build}"/>
     	<copy todir="${destDir}/plugins" file="../plugins/kontikiPlugin/${build}/kontikiPlugin.swf"/>
+    	<fb.exportReleaseBuild failonerror="true" project="audioDescription_plugin" destdir="${build}"/>
+    	<copy todir="${destDir}/plugins" file="../plugins/audioDescription_plugin/${build}/audioDescriptionPlugin.swf"/>
     	<fb.exportReleaseBuild failonerror="true" project="VPaidPlugin" destdir="${build}"/>
     	<copy todir="${destDir}/plugins" file="../plugins/VPaidPlugin/${build}/vpaidPlugin.swf"/>
 	    	  	
