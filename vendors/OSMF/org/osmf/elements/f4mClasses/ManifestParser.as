@@ -374,6 +374,14 @@ package org.osmf.elements.f4mClasses
 						resource.drmContentData = extractDRMMetadata(Media(value.media[0]).drmAdditionalHeader.data);
 					}
 				}
+				
+				if ( media.bitrate ) {
+					if (httpMetadata == null)
+					{
+						httpMetadata = new Metadata();
+					}
+					httpMetadata.addValue("bitrate", media.bitrate);
+				}
 
 				if (httpMetadata != null)
 				{

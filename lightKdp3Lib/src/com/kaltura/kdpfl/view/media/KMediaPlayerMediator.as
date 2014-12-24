@@ -28,7 +28,6 @@ package com.kaltura.kdpfl.view.media
 	import org.osmf.events.DynamicStreamEvent;
 	import org.osmf.events.LoadEvent;
 	import org.osmf.events.MediaElementEvent;
-	import org.osmf.events.MediaErrorEvent;
 	import org.osmf.events.MediaPlayerCapabilityChangeEvent;
 	import org.osmf.events.MediaPlayerStateChangeEvent;
 	import org.osmf.events.SeekEvent;
@@ -37,12 +36,16 @@ package com.kaltura.kdpfl.view.media
 	import org.osmf.media.MediaPlayer;
 	import org.osmf.media.MediaPlayerSprite;
 	import org.osmf.media.MediaPlayerState;
+	import org.osmf.metadata.Metadata;
 	import org.osmf.traits.DVRTrait;
 	import org.osmf.traits.DynamicStreamTrait;
+	import org.osmf.traits.LoadTrait;
 	import org.osmf.traits.MediaTraitType;
 	import org.osmf.traits.TimeTrait;
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
+	
+	import org.osmf.metadata.MetadataNamespaces;
 	
 	
 	/**
@@ -936,6 +939,12 @@ package com.kaltura.kdpfl.view.media
 					else
 					{
 						sendNotification( NotificationType.PLAYER_READY ); 
+					}
+					var loadTrait : LoadTrait = player.media.getTrait(MediaTraitType.LOAD) as LoadTrait;
+					var metadata:Metadata = loadTrait.resource.getMetadataValue(MetadataNamespaces.HTTP_STREAMING_METADATA) as Metadata;
+					//if we have bitrate its not a dynamic stream, notify js the bitrate
+					if ( metadata && metadata.getValue("bitrate") ) {
+						sendNotification( NotificationType.SWITCHING_CHANGE_COMPLETE, {newIndex : 0 , newBitrate: metadata.getValue("bitrate")}  );
 					}
 					
 					_mediaProxy.loadComplete();
