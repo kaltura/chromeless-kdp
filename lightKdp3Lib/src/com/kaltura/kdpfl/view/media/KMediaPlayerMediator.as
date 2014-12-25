@@ -45,8 +45,6 @@ package com.kaltura.kdpfl.view.media
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
 	
-	import org.osmf.metadata.MetadataNamespaces;
-	
 	
 	/**
 	 * Mediator for the KMediaPlayer component 
@@ -940,14 +938,15 @@ package com.kaltura.kdpfl.view.media
 					{
 						sendNotification( NotificationType.PLAYER_READY ); 
 					}
-					var loadTrait : LoadTrait = player.media.getTrait(MediaTraitType.LOAD) as LoadTrait;
-					var metadata:Metadata = loadTrait.resource.getMetadataValue(MetadataNamespaces.HTTP_STREAMING_METADATA) as Metadata;
-					//if we have bitrate its not a dynamic stream, notify js the bitrate
-					if ( metadata && metadata.getValue("bitrate") ) {
-						sendNotification( NotificationType.SWITCHING_CHANGE_COMPLETE, {newIndex : 0 , newBitrate: metadata.getValue("bitrate")}  );
-					}
 					
 					_mediaProxy.loadComplete();
+					
+					var loadTrait : LoadTrait = player.media.getTrait(MediaTraitType.LOAD) as LoadTrait;
+					var metadata:Metadata = loadTrait.resource.getMetadataValue("http://www.kaltura.com") as Metadata;
+					//if we have bitrate its not a dynamic stream, notify js the bitrate
+					if ( metadata && metadata.getValue("bitrate") ) {
+						sendNotification( NotificationType.BITRATE_CHANGE, { newBitrate: metadata.getValue("bitrate") }  );
+					}
 
 					break;
 				case MediaPlayerState.PAUSED:

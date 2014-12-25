@@ -499,6 +499,8 @@ package com.kaltura.kdpfl.model.type
 		 * Will indicate livestream is offline and we are in "VOD" mode
 		 * */ 
 		 static public const LIVE_EVENT_ENDED:String = "liveEventEnded";
+
+		 static public const BITRATE_CHANGE:String = "bitrateChange";
 		 
 
 	}

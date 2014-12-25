@@ -42,10 +42,10 @@ package org.osmf.elements.f4mClasses
 	import org.osmf.net.StreamingXMLResource;
 	import org.osmf.net.httpstreaming.HTTPStreamingUtils;
 	import org.osmf.net.httpstreaming.dvr.DVRInfo;
-	import org.osmf.utils.OSMFStrings;
-	import org.osmf.utils.URL;
 	import org.osmf.utils.Base64Decoder;
 	import org.osmf.utils.DateUtil;
+	import org.osmf.utils.OSMFStrings;
+	import org.osmf.utils.URL;
 	
 	CONFIG::LOGGING 
 	{	
@@ -376,11 +376,9 @@ package org.osmf.elements.f4mClasses
 				}
 				
 				if ( media.bitrate ) {
-					if (httpMetadata == null)
-					{
-						httpMetadata = new Metadata();
-					}
-					httpMetadata.addValue("bitrate", media.bitrate);
+					var bitrateMetadata:Metadata = new Metadata();
+					bitrateMetadata.addValue("bitrate", media.bitrate);
+					resource.addMetadataValue("http://www.kaltura.com", bitrateMetadata);
 				}
 
 				if (httpMetadata != null)
