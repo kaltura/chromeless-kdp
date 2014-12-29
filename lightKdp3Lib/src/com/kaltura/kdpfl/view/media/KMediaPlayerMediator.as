@@ -634,6 +634,7 @@ package com.kaltura.kdpfl.view.media
 						_mediaProxy.shouldWaitForElement = true;
 						
 						sendNotification(NotificationType.DO_PLAY);
+						_liveEventEnded = false;
 					}
 					else if (_mediaProxy.vo.isLive && _mediaProxy.vo.canSeek)
 					{
