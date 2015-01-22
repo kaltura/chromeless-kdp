@@ -717,9 +717,11 @@ package com.kaltura.kdpfl.view.media
 		
 		private function onEmbeddedCaptions (info: Object)  : void {
 			var proxyCaption:Object = new Object();
-			proxyCaption.text = info.text;
-			proxyCaption.trackid = info.trackid;
-			proxyCaption.language = info.language;	
+			for ( var prop:String in info ) {
+				if ( info[prop] is String ) {
+					proxyCaption[prop] = info[prop];
+				}
+			}
 
 			sendNotification("loadEmbeddedCaptions", proxyCaption);
 		}
@@ -777,7 +779,7 @@ package com.kaltura.kdpfl.view.media
 		
 		
 		private function onDoPlay():void
-		{		
+		{
 			if (_mediaProxy.vo.isLive)
 			{
 				if (_mediaProxy.vo.isOffline)
