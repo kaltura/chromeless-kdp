@@ -444,7 +444,7 @@ package com.kaltura.kdpfl.model
 			vo.keyframeValuesArray=info.times; 
 			var validInfo:Object = {};
 			for ( var prop:String in info ) {
-				if ( info[prop] is String ) {
+				if ( info[prop] is String || info[prop] is Number ) {
 					validInfo[prop] = info[prop];
 				}
 			}
