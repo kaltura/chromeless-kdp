@@ -311,17 +311,15 @@ package org.osmf.vpaid.elements
 			var vpaidContainer:MediaContainer = container as MediaContainer;
 			var displayObject:DisplayObjectTrait = this.getTrait(MediaTraitType.DISPLAY_OBJECT) as DisplayObjectTrait;
 			
-			if(vpaidContainer != null){
-				width = vpaidContainer.width;
-				height = vpaidContainer.height;
-			//Sometimes we can't find the container
-			}else if (_MASTWidth > -1)
+			if (_MASTWidth > 0)
 			{
-				// Not sure why this works for MAST (except if you resize the container)
 				width = _MASTWidth;
 				height = _MASTHeight;
 			}
-			else{
+			else if(vpaidContainer != null){
+				width = vpaidContainer.width;
+				height = vpaidContainer.height;
+			}else{
 				width = _loadTrait.loader.contentLoaderInfo.content.width;
 				height = _loadTrait.loader.contentLoaderInfo.content.height;
 			}

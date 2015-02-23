@@ -6,14 +6,14 @@ package com.kaltura.kdpfl.plugin
 	import com.kaltura.osmf.proxy.KSwitchingProxyElement;
 	
 	import flash.events.Event;
-	 
+	
 	import org.osmf.elements.SWFElement;
 	import org.osmf.elements.SWFLoader;
 	import org.osmf.media.MediaPlayer;
 	import org.osmf.media.URLResource;
 	import org.osmf.vpaid.elements.VPAIDElement;
 	import org.osmf.vpaid.metadata.VPAIDMetadata;
-	import org.puremvc.as3.interfaces.INotification; 
+	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
 	
 	public class VPaidPluginMediator extends Mediator
@@ -25,10 +25,12 @@ package com.kaltura.kdpfl.plugin
 		private var _mediaProxy:MediaProxy;
 		private var _vpaid:VPAIDElement;
 		private var _adParameters:String;
+		private var _adDimensions:Object;
 		
-		public function VPaidPluginMediator(adParameters:String, mediatorName:String=null, viewComponent:Object=null)
+		public function VPaidPluginMediator(adParameters:String, adDimensions:Object, mediatorName:String=null, viewComponent:Object=null)
 		{
 			_adParameters = adParameters;
+			_adDimensions = adDimensions;
 			super(NAME, viewComponent);
 		}
 		
@@ -46,7 +48,9 @@ package com.kaltura.kdpfl.plugin
 			//replace created element with VPAID element
 			if (notification.getName() == NotificationType.MEDIA_ELEMENT_READY ) {
 				var player:MediaPlayer = (facade.retrieveMediator(KMediaPlayerMediator.NAME) as KMediaPlayerMediator).player;
-				_vpaid = new VPAIDElement( new URLResource(_mediaProxy.vo.entryUrl), new SWFLoader(), player.mediaWidth, player.mediaHeight);	
+				var width: Number = player.mediaWidth ? player.mediaWidth : _adDimensions.width;
+				var height: Number = player.mediaHeight ? player.mediaHeight : _adDimensions.height;
+				_vpaid = new VPAIDElement( new URLResource(_mediaProxy.vo.entryUrl), new SWFLoader(), width, height);	
 				if ( _adParameters ) {
 					VPAIDMetadata(_vpaid.getMetadata("org.osmf.vpaid.metadata.VPAIDMetadata")).addValue("adParameters", _adParameters);
 				}
@@ -60,8 +64,8 @@ package com.kaltura.kdpfl.plugin
 			// handle player resize
 			if (notification.getName() == NotificationType.ROOT_RESIZE ) {
 				var dataObj:Object = new Object();
-				dataObj.width = notification.getBody().width;
-				dataObj.height = notification.getBody().height;
+				dataObj.width = _adDimensions.width ? _adDimensions.width : notification.getBody().width;
+				dataObj.height = _adDimensions.height ? _adDimensions.height : notification.getBody().height;
 				dataObj.viewMode = dataObj.width > 1000 ? "fullscreen" : "normal";
 				VPAIDMetadata(_vpaid.getMetadata("org.osmf.vpaid.metadata.VPAIDMetadata")).addValue(VPAIDMetadata.RESIZE_AD, dataObj);
 			}
