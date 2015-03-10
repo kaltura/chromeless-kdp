@@ -718,7 +718,7 @@ package com.kaltura.kdpfl.view.media
 		private function onEmbeddedCaptions (info: Object)  : void {
 			var proxyCaption:Object = new Object();
 			for ( var prop:String in info ) {
-				if ( info[prop] is String ) {
+				if ( info[prop] is String || info[prop] is Number ) {
 					proxyCaption[prop] = info[prop];
 				}
 			}
