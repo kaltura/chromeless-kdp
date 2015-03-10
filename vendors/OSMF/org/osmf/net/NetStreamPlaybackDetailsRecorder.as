@@ -228,7 +228,7 @@ package org.osmf.net
 		{
 			CONFIG::LOGGING
 			{
-				logger.debug("onNetStatus() - event.info.code=" + event.info.code);
+				logger.debug("onNetStatus() - event.info.code=" + JSON.stringify(event.info));
 			}
 			
 			switch (event.info.code) 
