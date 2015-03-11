@@ -196,7 +196,7 @@ package
 			
 			this.width = adData.adType == "linear" ? adData.linearAdSlotWidth : adData.nonLinearAdSlotWidth;
 			this.height = adData.adType == "linear" ? adData.linearAdSlotHeight : adData.nonLinearAdSlotHeight;
-			var fullAdTagUrl:String = unescape(adData.adTagUrl) + '&cust_params=' + adData.cust_params;
+			var fullAdTagUrl:String = unescape(adData.adTagUrl) + '&cust_params=' + unescape(adData.cust_params);
 			requestAds(fullAdTagUrl);
 			
 			
