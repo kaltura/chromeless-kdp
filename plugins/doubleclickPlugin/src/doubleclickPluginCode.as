@@ -196,10 +196,12 @@ package
 			
 			this.width = adData.adType == "linear" ? adData.linearAdSlotWidth : adData.nonLinearAdSlotWidth;
 			this.height = adData.adType == "linear" ? adData.linearAdSlotHeight : adData.nonLinearAdSlotHeight;
-			var fullAdTagUrl:String = unescape(adData.adTagUrl) + '&cust_params=' + adData.cust_params;
-			requestAds(fullAdTagUrl);
 			
-			
+			var fullAdTagUrl:String = unescape(adData.adTagUrl);
+			if (adData.cust_params){
+				fullAdTagUrl += '&cust_params=' + adData.cust_params;
+			}
+			requestAds(fullAdTagUrl);	
 		}
 		
 		public function changeVolume( val: Number):void {
