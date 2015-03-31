@@ -30,7 +30,7 @@ package
 	import flash.events.Event;
 	import flash.events.TimerEvent;
 	import flash.system.Security;
-	import flash.utils.Timer;
+	import flash.utils.*;
 	
 	import org.puremvc.as3.interfaces.IFacade;
 	
@@ -104,6 +104,7 @@ package
 		//inspect first loaded ad to see if it has cuepoints. cuepoint == adRule  
 		private var _isAdRule:Boolean	= 	false;
 		private var _backgroundLoaded:Boolean = false;
+		private var adProgressInterval:uint = 0;
 		
 		/////////////////TEST AD TAG URLS\\\\\\\\\\\\\\\\\\\\
 		//also has companion ads
@@ -213,15 +214,31 @@ package
 		public function pauseAd():void {
 			if ( adsManager ) {
 				adsManager.pause();
+				stopAdMonitor();
 			}
 		}
 
 		public function resumeAd():void {
 			if ( adsManager ) {
-				adsManager.resume();
+				adsManager.resume();			
+				startAdMonitor();
 			}
 		}
 
+		public function startAdMonitor():void {
+			stopAdMonitor();
+			adProgressInterval = setInterval(function():void{
+				var currentAdTime:int = adsManager.remainingTime;
+				_facade.sendNotification("adRemainingTimeChange", {time: (adDuration - currentAdTime), duration: adDuration, remain: currentAdTime});
+			},250);
+		}
+		
+		public function stopAdMonitor():void {
+			if (adProgressInterval)
+				clearInterval(adProgressInterval);
+		}
+
+		
 		public function hideContent():void {
 			if ( adsManager && !_backgroundLoaded) {
 				var rectangle:Shape = new Shape; 
@@ -382,7 +399,7 @@ package
 					//TODO: expose duration of ad as a public
 					//NOTE: not sure if this works because duration does not change, so this event is not triggered
 					//NOTE: so i did this in the remaining_time_changed function
-					this.adDuration = e.target.duration;					
+					adDuration = e.target.duration;					
 				});
 				
 				// Dispatched when a user interacts with a VPAID 2.0 ad.
@@ -390,18 +407,6 @@ package
 					log("AdEvent.INTERACTION");	
 					//TODO: send notification for adclick
 					_facade.sendNotification("adClick");
-				});
-				
-				adsManager.addEventListener(AdEvent.REMAINING_TIME_CHANGED, function(e:AdEvent):void
-				{
-					if(!durationRetrieved)
-					{
-						this.adDuration = e.target.remainingTime;
-						durationRetrieved = true;
-					}
-					this.remainingTime		= e.target.remainingTime;
-					this.currentTime		= e.ad.currentTime;
-					_facade.sendNotification("adRemainingTimeChange", {time: e.ad.currentTime, duration: e.ad.duration, remain: e.target.remainingTime});
 				});
 				
 				adsManager.addEventListener(AdEvent.SKIPPED, function(e:AdEvent):void
@@ -491,6 +496,7 @@ package
 			contentResumeRequestedHandler();
 			showContent();
 			_mediator.sendNotification(NotificationType.DO_PLAY);
+			stopAdMonitor();
 		}
 		
 		/**
@@ -507,6 +513,7 @@ package
 			cpAdTagUrl	= "";	
 			// Ads manager can be destroyed after all of its ads have played.
 			destroyAdsManager();
+			stopAdMonitor();
 		}
 		
 		private function adCompletedHandler(event:AdEvent):void{
@@ -514,6 +521,7 @@ package
 			_facade.sendNotification("adCompleted", {adID: event.ad.id});
 			if (!disableCompanionAds && flashCompanion)
 				flashCompanion.destroy();
+			stopAdMonitor();
 		}
 		
 		/**
@@ -592,6 +600,8 @@ package
 				
 				_mediator.stopPlayback();
 			//	_mediator.disableControls();
+				adDuration = ad.duration;
+				startAdMonitor();
 			}
 			
 			// This loads and displays the Companion Ads 
@@ -671,6 +681,7 @@ package
 		 */
 		private function adsManagerPlayErrorHandler(event:AdErrorEvent):void 
 		{
+			stopAdMonitor();
 			log("adsManagerPlayErrorHandler	"+event.error.errorMessage);
 		}
 		
