@@ -682,6 +682,7 @@ package
 		private function adsManagerPlayErrorHandler(event:AdErrorEvent):void 
 		{
 			stopAdMonitor();
+			_facade.sendNotification("adsLoadError");
 			log("adsManagerPlayErrorHandler	"+event.error.errorMessage);
 		}
 		
