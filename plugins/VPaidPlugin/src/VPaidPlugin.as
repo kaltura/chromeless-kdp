@@ -15,6 +15,7 @@ package
     public class vpaidPlugin extends Sprite implements IPluginFactory, IPlugin
     {    
         public var adParameters:String;
+		public var adDimensions:Object;
         
         public function vpaidPlugin()
         {
@@ -33,7 +34,12 @@ package
             if ( configProxy.vo.flashvars.vpaidAdParameters ) {
                 adParameters = unescape( configProxy.vo.flashvars.vpaidAdParameters );
             }
-            var vpaidMediator:VPaidPluginMediator = new VPaidPluginMediator( adParameters );
+			adDimensions = new Object();
+			if ( configProxy.vo.flashvars.vpaidAdWidth ) {
+				adDimensions.width = parseInt(configProxy.vo.flashvars.vpaidAdWidth);
+				adDimensions.height = parseInt(configProxy.vo.flashvars.vpaidAdHeight);
+			}
+			var vpaidMediator:VPaidPluginMediator = new VPaidPluginMediator( adParameters, adDimensions );
             facade.registerMediator(vpaidMediator);
         }
         
