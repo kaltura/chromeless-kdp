@@ -11,6 +11,7 @@ package
 	import com.google.ads.ima.api.CompanionAdEnvironments;
 	import com.google.ads.ima.api.FlashCompanionAd;
 	import com.google.ads.ima.api.HtmlCompanionAd;
+	import com.google.ads.ima.api.ImaSdkSettings;
 	import com.google.ads.ima.api.ViewModes;
 	import com.kaltura.kdpfl.model.ConfigProxy;
 	import com.kaltura.kdpfl.model.MediaProxy;
@@ -85,6 +86,9 @@ package
 		public var companionContainerId:String;
 		
 		public var adInProgress:Boolean		= false;
+		
+		public var playerVersion: String;
+		
 		// SDK Objects
 		private var _adsLoader:Object = {"loader":null, "type":null};
 		private var _adManagers:Array;
@@ -313,11 +317,12 @@ package
 			_adsLoader.loader = new AdsLoader();		
 			_adsLoader.loader.addEventListener(AdsManagerLoadedEvent.ADS_MANAGER_LOADED, adsManagerLoadedHandler);
 			_adsLoader.loader.addEventListener(AdErrorEvent.AD_ERROR, adsLoadErrorHandler);
-			
+			// add ImaSdkSettings
+			_adsLoader.loader.settings.playerType = "kaltura/mwEmbed";
+			_adsLoader.loader.settings.playerVersion = playerVersion;
 			// Instruct AdsLoader to request ads using the AdsRequest object.
 			_adsLoader.loader.requestAds(adsRequest);
-			
-			
+						
 		}
 		
 		/**
