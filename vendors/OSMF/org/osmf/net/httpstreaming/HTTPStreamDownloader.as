@@ -486,6 +486,8 @@ package org.osmf.net.httpstreaming
 				{
 					reason = HTTPStreamingEventReason.TIMEOUT;
 				}
+				var requestURL:String = _request ? _request.url : "[no request]"; //added "[no request]" string notification for HLS error handler
+				
 				var streamingEvent:HTTPStreamingEvent = new HTTPStreamingEvent(
 					HTTPStreamingEvent.DOWNLOAD_ERROR,
 					false, // bubbles
@@ -493,7 +495,7 @@ package org.osmf.net.httpstreaming
 					0, // fragment duration
 					null, // scriptDataObject
 					FLVTagScriptDataMode.NORMAL, // scriptDataMode
-					_request.url, // urlString
+					requestURL, // urlString
 					0, // bytesDownloaded
 					reason, // reason
 					this); // downloader

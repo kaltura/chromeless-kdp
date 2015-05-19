@@ -704,9 +704,9 @@ package com.kaltura.kdpfl.view.media
 						flvArray.push(flavor);
 					}
 				
+					_mediaProxy.vo.media.removeEventListener(MediaElementEvent.TRAIT_ADD, onDynamicStreamTraitAdd);
 					sendNotification(NotificationType.FLAVORS_LIST_CHANGED, {flavors: flvArray});
 					sendNotification( NotificationType.SWITCHING_CHANGE_COMPLETE, {newIndex : dynamicTrait.currentIndex , newBitrate: dynamicTrait.getBitrateForIndex( dynamicTrait.currentIndex )}  );	
-					_mediaProxy.vo.media.removeEventListener(MediaElementEvent.TRAIT_ADD, onDynamicStreamTraitAdd);
 					
 					if (_flashvars.maxAllowedRegularBitrate) 
 						player.maxAllowedDynamicStreamIndex = findStreamByBitrate( _flashvars.maxAllowedRegularBitrate );
