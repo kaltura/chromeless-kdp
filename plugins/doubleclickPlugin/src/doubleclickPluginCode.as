@@ -59,6 +59,9 @@ package
 		//do we care about cuepoints? 
 		public var trackCuePoints:Boolean		= true;
 		
+		//overlay timeout
+		public var timeout:Number;
+
 		//time remaining during ad playback
 		public var remainingTime:Number			= -1;
 		
@@ -332,7 +335,7 @@ package
 		{log("adsManagerLoadedHandler");
 			// Publishers can modify the default preferences through this object.
 			var adsRenderingSettings:AdsRenderingSettings =	new AdsRenderingSettings();
-			
+			adsRenderingSettings.useStyledNonLinearAds = true;
 			// In order to support VMAP ads, ads manager requires an object that
 			// provides current playhead position for the content.						
 			contentPlayhead		= {
@@ -607,6 +610,12 @@ package
 			//	_mediator.disableControls();
 				adDuration = ad.duration;
 				startAdMonitor();
+			}else{
+				if (timeout){
+					setTimeout(function(){
+						adsManager.stop();
+					},timeout * 1000);
+				}
 			}
 			
 			// This loads and displays the Companion Ads 
