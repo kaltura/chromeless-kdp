@@ -224,7 +224,14 @@ package
 				stopAdMonitor();
 			}
 		}
-
+		
+		public function skipAd():void {
+			if ( adsManager ) {
+				adsManager.stop();
+				stopAdMonitor();
+			}
+		}
+		
 		public function resumeAd():void {
 			if ( adsManager ) {
 				adsManager.resume();			

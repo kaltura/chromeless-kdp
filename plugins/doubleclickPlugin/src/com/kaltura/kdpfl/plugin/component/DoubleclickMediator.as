@@ -119,6 +119,7 @@ package com.kaltura.kdpfl.plugin.component
 				"resumeAd",
 				"adStarted",
 				"requestAds",
+				"skipAd",
 				"destroy",
 				"hideContent",
 				"showContent"
@@ -198,6 +199,9 @@ package com.kaltura.kdpfl.plugin.component
 					break;		
 				case "resumeAd":
 					_plugin.resumeAd();
+					break;
+				case "skipAd":
+					_plugin.skipAd();
 					break;
 				case "requestAds":
 					_plugin.requestAdExternal(data);
