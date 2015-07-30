@@ -367,7 +367,7 @@ package
 			if (adsManager) 
 			{
 				adsManager.addEventListener(AdEvent.LOADED,function(e:AdEvent):void{
-					_facade.sendNotification("adLoaded", {isLinear: e.ad.linear, adID: e.ad.id, adSystem: e.ad.adSystem, adPosition: e.ad.adPodInfo.adPosition});
+					_facade.sendNotification("adLoaded", {isLinear: e.ad.linear, adID: e.ad.id, adSystem: e.ad.adSystem, adPosition: e.ad.adPodInfo.adPosition, skippable: e.ad.skippable});
 				});
 				// Add required ads manager listeners.
 				// ALL_ADS_COMPLETED event will fire once all the ads have played. There
