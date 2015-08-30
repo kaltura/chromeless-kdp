@@ -2,6 +2,7 @@ package com.kaltura.kdpfl.controller
 {
 	import com.adobe.serialization.json.JSON;
 	import com.kaltura.kdpfl.model.ConfigProxy;
+	import com.kaltura.kdpfl.model.ExternalInterfaceProxy;
 	import com.kaltura.kdpfl.model.MediaProxy;
 	import com.kaltura.kdpfl.model.SequenceProxy;
 	import com.kaltura.kdpfl.model.type.NotificationType;
@@ -13,7 +14,6 @@ package com.kaltura.kdpfl.controller
 	import com.kaltura.kdpfl.util.KTextParser;
 	import com.kaltura.kdpfl.util.URLUtils;
 	import com.kaltura.kdpfl.view.controls.KTrace;
-	import com.kaltura.kdpfl.model.ExternalInterfaceProxy;
 	
 	import flash.events.AsyncErrorEvent;
 	import flash.events.ErrorEvent;
@@ -42,10 +42,10 @@ package com.kaltura.kdpfl.controller
 		{
 			_config = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
 			var flashvars:Object = _config.vo.flashvars;
-	
+				
 			var mediaProxy:MediaProxy = facade.retrieveProxy(MediaProxy.NAME) as MediaProxy;
-			//add akamaiHd plugin if streamerType is akamaiHd
-			if (mediaProxy.vo.deliveryType == StreamerType.HDNETWORK || mediaProxy.vo.deliveryType == StreamerType.HDNETWORK_HDS)
+			//add akamaiHd plugin if streamerType is akamaiHd 
+			if ( !flashvars.ignoreAkamaiHD && (mediaProxy.vo.deliveryType == StreamerType.HDNETWORK || mediaProxy.vo.deliveryType == StreamerType.HDNETWORK_HDS) )
 				flashvars.akamaiHD = {plugin: "true", asyncInit: "true", loadingPolicy: "preInitialize"};
 			
 			_config.vo.pluginsMap = {};
