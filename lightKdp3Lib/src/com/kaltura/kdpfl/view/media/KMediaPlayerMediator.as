@@ -653,6 +653,7 @@ package com.kaltura.kdpfl.view.media
 					} 
 					if (media.hasOwnProperty("client") && media["client"]) {
 						media["client"].addHandler( "onTextData", onEmbeddedCaptions );
+						media["client"].addHandler( "onID3Data", onID3Tag );
 					}
 					break;
 				
@@ -724,6 +725,10 @@ package com.kaltura.kdpfl.view.media
 			}
 
 			sendNotification("loadEmbeddedCaptions", proxyCaption);
+		}
+		
+		private function onID3Tag(info:Object):void{
+			sendNotification("id3tag", info);
 		}
 		
 		private function doSeek(seekTo:Number):void
