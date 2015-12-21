@@ -61,6 +61,7 @@ package com.kaltura.kdpfl.view.media
 		private var _bytesLoaded:Number;//keeps loaded bytes for intelligent seeking
 		private var _bytesTotal:Number;//keeps total bytes for intelligent seeking
 		private var _duration:Number;//keeps duration for intelligent seeking
+		private var _bufferLength:Number;
 		private var _blockThumb : Boolean = false;
 		private var _mediaProxy : MediaProxy; 
 		private var _sequenceProxy : SequenceProxy;
@@ -1475,6 +1476,20 @@ package com.kaltura.kdpfl.view.media
 		public function getCurrentTime():Number
 		{
 			return _sequenceProxy.vo.isInSequence ? player.currentTime : player.currentTime + _offsetAddition;
+		}
+		
+		/**
+		 *  
+		 * @return player.currentBufferLength (if exists) 
+		 * 
+		 */		
+		public function getCurrentBufferLength():Number
+		{
+			return _bufferLength;
+		}
+		public function setCurrentBufferLength(value:Number):void
+		{
+			_bufferLength = value;
 		}
 		
 		/**
