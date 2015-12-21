@@ -24,6 +24,7 @@ package com.kaltura.kdpfl.model
 		public static const EVALUATE : String = "evaluate";
 		public static const SET_ATTRIUBUTE : String = "setKDPAttribute";
 		public static const GET_CURRENT_TIME: String = "getCurrentTime";
+		public static const GET_CURRENT_BUFFER_LENGTH: String = "getCurrentBufferLength";
 		//public static const JS_CALLBACK_READY : String = "jsCallbackReady";
 		public var jsCallBackReadyFunc : String = "jsCallbackReady";
 		
@@ -140,6 +141,7 @@ package com.kaltura.kdpfl.model
 			addCallback( ADD_JS_LISTENER , addJsListener );
 			addCallback( REMOVE_JS_LISTENER , removeJsListener );
 			addCallback( GET_CURRENT_TIME , getCurrentTime );
+			addCallback( GET_CURRENT_BUFFER_LENGTH , getCurrentBufferLength );
 			
 			var readyCallback:String = jsCallBackReadyFunc;
 			if ( _flashvars.hasOwnProperty("jsCallBackReadyFunc") )
@@ -187,6 +189,10 @@ package com.kaltura.kdpfl.model
 		
 		public function getCurrentTime():Number {
 			return (facade.retrieveMediator(KMediaPlayerMediator.NAME) as KMediaPlayerMediator).getCurrentTime();
+		}
+		
+		public function getCurrentBufferLength():Number {
+			return (facade.retrieveMediator(KMediaPlayerMediator.NAME) as KMediaPlayerMediator).getCurrentBufferLength();
 		}
 
 		/**
