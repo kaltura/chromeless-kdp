@@ -606,18 +606,19 @@ package
 					}
 				}
 			}
+			// Send adStart notification	
+			_facade.sendNotification("adStart", {context:_adContext, linear: ad.linear, duration:ad.duration, adID: ad.id, adTitle: ad.title, adPodInfo: ad.adPodInfo});
 			
-			_facade.sendNotification("adStart", {context:_adContext, duration:event.ad.duration, adID: event.ad.id, adTitle: event.ad.title, adPodInfo: event.ad.adPodInfo});
 			if(ad.linear){
 				
 				adInProgress	= true;
-				// Send adStart notification	
 				
 				_mediator.stopPlayback();
 			//	_mediator.disableControls();
 				adDuration = ad.duration;
 				startAdMonitor();
 			}else{
+				
 				if (timeout){
 					setTimeout(function(){
 						adsManager.stop();
