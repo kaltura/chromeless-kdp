@@ -607,11 +607,11 @@ package
 				}
 			}
 			
+			_facade.sendNotification("adStart", {context:_adContext, duration:event.ad.duration, adID: event.ad.id, adTitle: event.ad.title, adPodInfo: event.ad.adPodInfo});
 			if(ad.linear){
 				
 				adInProgress	= true;
 				// Send adStart notification	
-				_facade.sendNotification("adStart", {context:_adContext, duration:event.ad.duration, adID: event.ad.id, adTitle: event.ad.title, adPodInfo: event.ad.adPodInfo});
 				
 				_mediator.stopPlayback();
 			//	_mediator.disableControls();
