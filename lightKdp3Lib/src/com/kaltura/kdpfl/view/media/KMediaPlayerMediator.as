@@ -1012,7 +1012,7 @@ package com.kaltura.kdpfl.view.media
 						}
 					}
 					
-					if(player.isDynamicStream && !_sequenceProxy.vo.isInSequence && !_doSwitchSent)
+					if(player.isDynamicStream && !_sequenceProxy.vo.isInSequence && !_doSwitchSent && !_flashvars.disableAutoDynamicStreamSwitch)
 					{
 						_mediaProxy.vo.autoSwitchFlavors = player.autoDynamicStreamSwitch = true;
 					}
