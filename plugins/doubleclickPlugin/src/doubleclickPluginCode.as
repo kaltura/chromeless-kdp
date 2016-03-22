@@ -607,7 +607,7 @@ package
 				}
 			}
 			// Send adStart notification	
-			_facade.sendNotification("adStart", {context:_adContext, linear: ad.linear, duration:ad.duration, adID: ad.id, adTitle: ad.title, adPodInfo: ad.adPodInfo});
+			_facade.sendNotification("adStart", {context:_adContext, linear: ad.linear, duration:ad.duration, adID: ad.id, adTitle: ad.title, adPodInfo: ad.adPodInfo, traffickingParameters: ad.traffickingParameters});
 			
 			if(ad.linear){
 				
